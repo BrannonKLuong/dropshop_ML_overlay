@@ -2,21 +2,23 @@
 
 ## Summary:
 A brief high-level explanation of how the current implementation works is that every 
-detection provided by the Machine Learning Model YoloV8 will check to find it's closest droplet. 
+detection provided by the Machine Learning Model YoloV8 will check to find its closest droplet. 
 Every frame in the video is analyzed with the machine learning (ML) model which produces
 an array of detections with corresponding information 
 x1, y1, x2, y2, id (this may or not be present depending on how the data was labeled), confidence percentage, class defined in the model (also dependent on how data was labeled)
-This is denoted in the algorithm as 
+This is denoted in the algorithm as one of the following.
 ```
    xone, yone, xtwo, ytwo, id, confidence, class_in_model = data
    xone, yone, xtwo, ytwo, confidence, class_in_model = data
 ```
-Each detection is mapped to the existing Droplets and updated to those droplets' positions. 
-Green boxes are straight segments, Blue boxes are Curve segments, red dots are points along the curve to calculate the quadratic coefficients a, b, c,
-black boxes are dispensers, purple boxes are ML model's detections (the top left-hand number is ID, the right-hand number is confidence),
-Cyan/Aqua boxes inside the purple boxes are Python Python-initialized droplets to store data. 
-If a detection is missed then predict where it'll be using the fact the Droplet is in a straight or curve traveling in 1 direction
-#### Note get_droplet_on_screen() is hard coded to initialize droplets at time T and location (x, y) referring to a dispenser. So varies by video
+Each detection is mapped to the Droplets that were initialized based on the facts that we assume we know when and where they begin. 
+Each detection is then mapped to each droplet and subsequently updated the positions of that Droplet.
+Green boxes are straight segments, Blue boxes are Curve segments, and red dots are points along the curve to calculate the quadratic coefficients a, b, and c.
+Black boxes are dispensers, purple boxes are the ML model's detections (the left number is ID, the right number is confidence),
+Cyan/Aqua boxes inside the purple boxes are Python-initialized droplets to store data. 
+If a detection is missed then the algorithm will attempt to predict where it'll be using the fact the Droplet is in a straight or curve traveling in 1 direction
+#### Note get_droplet_on_screen() is hard-coded to initialize droplets at time T and location (x, y) referring to a dispenser. So varies by video
+
 1. Pass in weights_path which is a file of weights trained with YoloV8 and a video path to main()
     ```if __name__ == '__main__':
     '''Start Time and End Time is a timer to measure run time'''
