@@ -49,7 +49,7 @@ The main function takes two arguments the weights and the video. The weights wer
     execution_time = end_time - start_time
     print(f"Execution time: {execution_time:.2f} seconds")
     ```
-2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects. Where the list of segments is entered in the form of Type((x1, y2), (x2, y2), (Direction_x, direction y)). A corresponding list of start and middle-end points are of the form ((start x, start y), (mid x, mid y) (end x, y)) <b>if and only if</b> it is also a Curve Type.
+2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects. Where the list of segments is entered in the form of Type((x1, y2), (x2, y2), (Direction_x, direction y)). A corresponding list of start and middle-end points are of the form ((start x, start y), (mid x, mid y) (end x, y)) <b>IF AND ONLY IF</b> it is also a Curve Type.
    
     ```
     all_droplets = set()
@@ -130,7 +130,7 @@ This portion will cover what the main while loop will do which is how the algori
             found = set()
             labels = []
 ```
-3. The next following try-except block is the most error-prone be it the algorithm running into type errors or the lack of sufficient data from the model. Note that there exist many more nested exceptions that will continue onto the next detection cause despite faults the algorithm will need to retain as much information as possible to reduce general inaccuracies.  <b>Future implementations</b> will attempt to address this issue. The next following block will utilize the data from each detection in the format of xone, yone, xtwo, ytwo, id, confidence, class_in_model <b>or</b> xone, yone, xtwo, ytwo, confidence, class_in_model. Mid is the middle point of each detection. Drops to consider were initially designed to be a data structure local to a particular path segment but that was error-prone. A safer approach is currently implemented using a global approach. A better implementation will be discussed in the <b>Future Implementation Section</b>. Let Drops to consider be all droplets. 
+3. The next following try-except block is the most error-prone be it the algorithm running into type errors or the lack of sufficient data from the model. Note that there exist many more nested exceptions that will continue onto the next detection cause despite faults the algorithm will need to retain as much information as possible to reduce general inaccuracies.  <b>Future implementations</b> will attempt to address this issue. The next following block will utilize the data from each detection in the format of xone, yone, xtwo, ytwo, id, confidence, class_in_model <b>OR</b> xone, yone, xtwo, ytwo, confidence, class_in_model. Mid is the middle point of each detection. Drops to consider were initially designed to be a data structure local to a particular path segment but that was error-prone. A safer approach is currently implemented using a global approach. A better implementation will be discussed in the <b>Future Implementation Section</b>. Let Drops to consider be all droplets. 
 
 ```
             try:
