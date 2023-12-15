@@ -130,10 +130,31 @@ This portion will cover what the main while loop will do which is how the algori
             found = set()
             labels = []
 ```
-3. 
+3. The next following try-except block is the most error-prone be it the algorithm running into type errors or the lack of sufficient data from the model. Note that there exist many more nested exceptions that will continue onto the next detection cause despite faults the algorithm will need to retain as much information as possible to reduce general inaccuracies.  Future implementations will attempt to address this issue. The next following block will utilize the data from each detection in the format of xone, yone, xtwo, ytwo, id, confidence, class_in_model <b>or</b> xone, yone, xtwo, ytwo, confidence, class_in_model. Mid is the middle point of each detection. Drops to consider were initially designed to be a data structure local to a particular path segment but that was error-prone. A safer approach is currently implemented using a global approach. A better implementation will be discussed in the Future Implementation Section. Let Drops to consider be all droplets. 
 
+```
+            try:
+                for data in result.boxes.data.tolist():
+                    try:
+                        xone, yone, xtwo, ytwo, _, confidence, _ = data
+                    except ValueError:
+                        print("No Data given by detection")
 
+                    mid = get_mid_point(xone, yone, xtwo, ytwo)
 
+                    try:
+                        drops_to_consider = all_droplets
+
+                    except KeyError:
+                        print("Detection occurred outside of the course. Data: ", data)
+                        continue
+
+                    except Exception as e:
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                        print(exc_type, fname, exc_tb.tb_lineno)
+                        continue
+```
 
 
 
