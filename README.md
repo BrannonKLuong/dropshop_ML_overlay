@@ -219,4 +219,23 @@ def handle_missings(drops: {Droplet}, found: set, map_course: Path) -> None:
 
         if (cv2.waitKey(10) == 27):
             break
-``` 
+```
+## Step 3: The Droplet Object
+1. The Droplet object is initialized with the following arguments an ID (Identification) number, starting x, starting y positions, trajectory or speed, current section which path segment of the course it starts in which defaults at 0.
+```
+class Droplet():
+    def __init__(self, id, x: int = None, y:int = None, trajectory: int = 1, current_section: int = 0) -> None:
+        '''Initialize Droplet Object'''
+        self.id = id
+        self.x = x
+        self.y = y
+        self.trajectory = trajectory
+        self.current_section = current_section
+        self.last_detection = None
+        self.curve_speed = trajectory
+```
+2. 
+## Step 4: The Path Object
+## Step 5: The Straight Object
+## Step 6: The Curve Object
+## Step 7: Future Implementations
