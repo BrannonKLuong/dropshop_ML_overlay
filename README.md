@@ -234,7 +234,28 @@ class Droplet():
         self.last_detection = None
         self.curve_speed = trajectory
 ```
-2. 
+2. Update position is logic logic for inferring the position of a given droplet when it is not detected by the Machine Learning Model. The Straights are simple to update the x or y depending on if the Droplet is inside of a straight going up or down. If a droplet is in a curve and not detected then it requires it to run an inference using the quadratic formula provided the start, middle, and end points inside of a Curve. The function then finally calls update_section which checks if the droplet itself moved into a new section and updates the data accordingly. Note the dashed section "-----" will have to be replaced to be used in parallel with the user interface and <b>IF</b> there is a notable tilt to the camera angle of the video that might have the droplet move out of a drawn bounding box.
+# Insert Example of Tilted Box
+```
+    def update_position(self, course: Path, droplet) -> (int, int):
+        segment = course.segments_in_order[self.current_section]
+        direction_x, direction_y = segment.direction
+        if isinstance(segment, Straight):
+            if direction_x and not direction_y:
+                self.x += (self.trajectory * direction_x)
+            else:
+                self.y += (self.trajectory * direction_y)
+        else:
+            self.x += (self.curve_speed * direction_x)
+            self.y = segment.predict_y(self.x)
+        self.update_section(course, droplet)
+        return (self.x, self.y)
+```
+3. 
+
+
+
+
 ## Step 4: The Path Object
 ## Step 5: The Straight Object
 ## Step 6: The Curve Object
