@@ -192,11 +192,9 @@ An example of how the first implementation was supposed to work:
 7. The next section is a core part of the logic where <b>Det<sub>n</sub> < d<sub>n</sub></b> which means there are missing Droplets. With this, we do the following. Find the difference between all the droplets and the droplets that have been found. For each missing droplet infer their position. This inference with the update position and update section will be elaborated in the Droplet Class Object Section.
 ```
                 if numbers_detected < droplets_on_screen:
-                    print("Handling Missing Cases")
                     handle_missings(all_droplets, found, course)
 
 def handle_missings(drops: {Droplet}, found: set, map_course: Path) -> None:
-    '''This compares the detected droplets vs the actual droplets and then Infers where the missing droplets should be and updates their position that way'''
     missing = drops.difference(found)
     for drop in missing:
         drop.update_position(map_course, drop)
