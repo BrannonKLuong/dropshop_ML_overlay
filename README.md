@@ -1,7 +1,15 @@
 # Design and Implementation of DropShop Algorithm
 
 ## Summary:
-Every frame in the video will now be analyzed with the machine learning (ML) model and given an array of detections. 
+A brief high-level explanation of how the current implementation works is that every 
+detection provided by the Machine Learning Model YoloV8 will check to find it's closest droplet. 
+Every frame in the video is analyzed with the machine learning (ML) model which produces
+an array of detections with corresponding information 
+x1, y1, x2, y2, id (this may or not be present depending on how the data was labeled), confidence percentage, class defined in the model (also dependent on how data was labeled)
+This is denoted in the algorithm as 
+```xone, yone, xtwo, ytwo, id, confidence, class_in_model = data
+xone, yone, xtwo, ytwo, confidence, class_in_model = data
+```
 Each detection is mapped to the existing Droplets and updated to those droplets' positions. 
 Green boxes are straight segments, Blue boxes are Curve segments, red dots are points along the curve to calculate the quadratic coefficients a, b, c,
 black boxes are dispensers, purple boxes are ML model's detections (the top left-hand number is ID, the right-hand number is confidence),
