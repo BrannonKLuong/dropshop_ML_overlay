@@ -51,7 +51,9 @@ The main function takes two arguments the weights and the video. The weights wer
     print(f"Execution time: {execution_time:.2f} seconds")
     ```
 2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects.
-``` all_droplets = set() ```
+    ```
+    all_droplets = set()
+    ```
 4. Course or build course is designed in one of two forms. Using the User Interface the User draws bounding boxes and returns the same data or for testing purposes a hard-coded version list of arrays.
    
     
