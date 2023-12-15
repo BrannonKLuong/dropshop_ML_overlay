@@ -194,5 +194,31 @@ An example of how the first implementation was supposed to work:
                 if numbers_detected < droplets_on_screen:
                     print("Handling Missing Cases")
                     handle_missings(all_droplets, found, course)
+
+def handle_missings(drops: {Droplet}, found: set, map_course: Path) -> None:
+    '''This compares the detected droplets vs the actual droplets and then Infers where the missing droplets should be and updates their position that way'''
+    missing = drops.difference(found)
+    for drop in missing:
+        drop.update_position(map_course, drop)
+        found.add(drop)
 ```
-9. 
+8. The remainder of this algorithm finishes labeling the data.
+
+```
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+
+        # where_droplets_should_start(frame)  #Call to show dispenser locations
+
+        detections = sv.Detections.from_ultralytics(result)
+        label_course(frame, course) 
+        label_curves_s_m_e(frame, course)
+
+        frame = box.annotate(scene=frame, detections=detections, labels = labels)
+        cv2.imshow("yolov8", frame)
+
+        if (cv2.waitKey(10) == 27):
+            break
+``` 
