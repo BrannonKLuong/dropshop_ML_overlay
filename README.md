@@ -155,8 +155,9 @@ This portion will cover what the main while loop will do which is how the algori
                         print(exc_type, fname, exc_tb.tb_lineno)
                         continue
 ```
-4.  The core of the logic is to find the closest to a given detection.
+4.  The core of the logic is to find the closest to a given detection's (x, y) coordinate.
 ```
+                    closest_droplet = find_closest_droplet(drops_to_consider, mid)
 def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int)) -> Droplet:
     closest = float('inf')
     closest_drop = None
@@ -168,7 +169,30 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int)) -> Drople
             closest = distance
     return closest_drop  
 ```
-6.  
+5. Once acquiring the closest droplet to a detection it'll be added to a data structure of found. Each droplet will then update its information with the new (x, y) position as well as try to calculate its average trajectory since it's last been seen. If the detection has occurred in a different segment compared to the droplet it just acquired that means the droplet has moved to a new segment. The algorithm will then compare the (x and y) coordinates to compare and update the section accordingly. The initial implementation used a primitive way to carry over data. The idea was to reduce overall average run time by using localized data structures for particular segments. This would allow the algorithm to compare detections to only droplets in the segment it was discovered reducing the overall run time on average from O(n<sub>2</sub>) to some O(n detections * m droplets in that smaller segment). However, this implementation was error-prone and not the ideal way to both carry over data and compare detections to droplets.
 
+An example of how the first implementation was supposed to work: 
+# Insert Image of Example of Data Storage
+```
+                    closest_droplet = find_closest_droplet(drops_to_consider, mid)
+                    found.add(closest_droplet)
 
-    
+                    closest_droplet.update_last_seen(mid, t, x_y_map, speed_threshold)
+
+                    if x_y_map[mid] != course.segments_in_order[closest_droplet.current_section]:
+                        closest_droplet.update_section(course, closest_droplet)
+```
+6. Box Drops are a way to draw a bounding box around each droplet and then the labeling string is appended to labels for the frame to be labeled.
+```
+                    box_drops(all_droplets, frame)
+
+                    if confidence:
+                        labels.append(f"{closest_droplet.id} {confidence:0.2f}")
+```
+7. The next section is a core part of the logic where <b>Det<sub>n</sub> < d<sub>n</sub></b> which means there are missing Droplets. With this, we do the following. Find the difference between all the droplets and the droplets that have been found. For each missing droplet infer their position. This inference with the update position and update section will be elaborated in the Droplet Class Object Section.
+```
+                if numbers_detected < droplets_on_screen:
+                    print("Handling Missing Cases")
+                    handle_missings(all_droplets, found, course)
+```
+9. 
