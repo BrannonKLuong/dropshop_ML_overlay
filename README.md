@@ -298,13 +298,92 @@ The curve speed is updated dynamically as well but utilizes a percentage thresho
                     self.curve_speed *= proximity_to_center/total_length 
             self.last_detection = (mid, t)
 ```
-5. 
-
-
-
-
-
 ## Step 4: The Path Object
+1. The Python Path Object has an array that holds the Path Segments in order. The add droplets to queues is an attempt to implement a local data structure to each segment to hold the Droplets.
+```
+class Path():
+    def __init__(self) -> None:
+        self.segments_in_order = []
+    
+    def add_segment(self, new_segment) -> None:
+        self.segments_in_order.append(new_segment)
+    #--------------------------------------------------------------------------------------"
+    def add_droplet_to_queues(self, droplet) -> None:
+        length = len(self.segments_in_order)
+        if length > 1 and droplet.current_section + 1 < length:
+            self.segments_in_order[droplet.current_section + 1].add_droplet(droplet)
+        self.segments_in_order[droplet.current_section].add_droplet(droplet)
+    #--------------------------------------------------------------------------------------"
+```
 ## Step 5: The Straight Object
+1. Straight Object is initialized with top left points, bottom right point, direction, and the attempt to localize the data structure. The variable top right might be required if the camera tilt previously mentioned becomes a significant problem to address.
+
+```
+class Straight():
+    def __init__(self, point1: (int, int), point2: (int, int), direction: int) -> None:
+        self.top_left = point1
+        self.bottom_right = point2
+        self.direction = direction
+        self.queue = set()
+        #self.top_right = (460, 45) # Will have to be a passed in argument once Interface is integrated
+    #------------------------------------------------------"
+    def add_droplet(self, droplet: Droplet) -> None:
+        self.queue.add(droplet)
+    
+    def remove_droplet(self, droplet: Droplet) -> None:
+        self.queue.remove(droplet)
+    #------------------------------------------------------"
+```
 ## Step 6: The Curve Object
+1. The Python Curve Object is initialized with a top left point, bottom right point, and direction. It does require an addition of the start, middle, and end. The code can be modified to accept it as initializing arguments. The variable quadratic_coef is the a, b, c in f(x) = ax<sup>2</sup> + bx + c given start, middle, and end. The functions get_quadratic find these coefficients and predict_y passes in an x to calculate the respective y value.
+
+```
+class Curve():
+    def __init__(self, point1: (int, int), point2: (int, int), direction: int) -> None:
+        self.top_left = point1
+        self.bottom_right = point2
+        self.direction = direction 
+        self.start = None
+        self.mid = None
+        self.end = None
+        self.queue = set()
+        self.quadratic_coef = None #Holds a, b, c coefficients of quadratic formula
+
+    def add_droplet(self, droplet: Droplet) -> None:
+        '''Add a droplet to the queue'''
+        self.queue.add(droplet)
+    
+    def remove_droplet(self, droplet: Droplet) -> None:
+        '''Remove a droplet to the queue'''
+        self.queue.remove(droplet)
+    
+    def add_sme(self, s: (int, int), m: (int, int), e: (int, int)) -> None:
+        self.start = s
+        self.mid = m
+        self.end = e
+        self.quadratic_coef = self.get_quadratic(s, m, e)
+    
+    def get_quadratic(self, s: (int, int), m: (int, int), e: (int, int)) -> (int, int, int):
+        x_1 = s[0]
+        x_2 = m[0]
+        x_3 = e[0]
+        y_1 = s[1]
+        y_2 = m[1]
+        y_3 = e[1]
+
+        a = y_1/((x_1-x_2)*(x_1-x_3)) + y_2/((x_2-x_1)*(x_2-x_3)) + y_3/((x_3-x_1)*(x_3-x_2))
+
+        b = (-y_1*(x_2+x_3)/((x_1-x_2)*(x_1-x_3))
+            -y_2*(x_1+x_3)/((x_2-x_1)*(x_2-x_3))
+            -y_3*(x_1+x_2)/((x_3-x_1)*(x_3-x_2)))
+
+        c = (y_1*x_2*x_3/((x_1-x_2)*(x_1-x_3))
+            +y_2*x_1*x_3/((x_2-x_1)*(x_2-x_3))
+            +y_3*x_1*x_2/((x_3-x_1)*(x_3-x_2)))
+        return a,b,c
+
+    def predict_y(self, x: int) -> int:
+        a, b, c = self.quadratic_coef
+        return a * (x ** 2) + b * x + c
+```
 ## Step 7: Future Implementations
