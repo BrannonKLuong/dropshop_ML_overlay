@@ -50,7 +50,8 @@ The main function takes two arguments the weights and the video. The weights wer
     execution_time = end_time - start_time
     print(f"Execution time: {execution_time:.2f} seconds")
     ```
-2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects. Where the list of segments is entered in the form of Type((x1, y2), (x2, y2), (Direction_x, direction y)). A corresponding list of start and middle-end points are of the form ((start x, start y), (mid x, mid y) (end x, y)) <b>if and only if</b> it is also a Curve Type. 
+2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects. Where the list of segments is entered in the form of Type((x1, y2), (x2, y2), (Direction_x, direction y)). A corresponding list of start and middle-end points are of the form ((start x, start y), (mid x, mid y) (end x, y)) <b>if and only if</b> it is also a Curve Type.
+   
     ```
     all_droplets = set()
     def build_course() -> Path:
