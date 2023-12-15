@@ -395,4 +395,6 @@ The Future of this current implementation should consist of a handful of things.
 
 #### Case 5: The new droplet d<sub>new</sub> is inserted between two Droplets. One Droplet d<sub>0</sub> in the segment and one outside in the previous segment d<sub>1</sub>. The segment weights must be as follows: d<sub>1</sub> <  d<sub>new</sub>  < d<sub>0</sub>.
 
+#### Case 6: The new droplet d<sub>new</sub> is inserted between two Droplets. One Droplet in the segment before d<sub>0</sub> and one in the segment after d<sub>1</sub>. he segment weights must be as follows: d<sub>0</sub> <  d<sub>new</sub>  < d<sub>1</sub>.
+
 Second would be improve the Dynamic 
