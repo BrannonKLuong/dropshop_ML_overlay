@@ -50,7 +50,7 @@ The main function takes two arguments the weights and the video. The weights wer
     execution_time = end_time - start_time
     print(f"Execution time: {execution_time:.2f} seconds")
     ```
-2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects. Where the list of segments is entered in the form of Type((x1, y2), (x2, y2), (Direction_x, direction y)). A corresponding list of start and middle-end points are of the form ((start x, start y), (mid x, mid y) (end x, y)) if and only if it is also a Curve Type. 
+2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects. Where the list of segments is entered in the form of Type((x1, y2), (x2, y2), (Direction_x, direction y)). A corresponding list of start and middle-end points are of the form ((start x, start y), (mid x, mid y) (end x, y)) <b>if and only if</b> it is also a Curve Type. 
     ```
     all_droplets = set()
     def build_course() -> Path:
@@ -72,7 +72,7 @@ The main function takes two arguments the weights and the video. The weights wer
     ```
 
 4. Course or build course is designed in one of two forms. Using the User Interface the User draws bounding boxes and returns the same data or for testing purposes a hard-coded version list of arrays.
-The following function is used with the belief that the algorithm will do one of two things. Either save the following data structure and load it or have time before the experiment actually begins to initialize it. The variable <b>x_y_map</b>
+The following function is used with the belief that the algorithm will do one of two things. Either save the following data structure and load it or have time before the experiment begins to initialize it. The variable <b>x_y_map</b> will run through every segment of the course and map every single (x, y) coordinate inside of the provided drawn course to a dictionary. The idea is to trade the start time before the algorithm is fixed at some O(n<sup>2</sup>) for each of the x by y boxes to help expedite the search process throughout the algorithm. This way every detection returning some (x, y) can be mapped to a dictionary of its corresponding section. This allows us to quickly receive the direction or the direction in which the detection should be traveling. 
 
     
 6. Each Segment is either a Straight or a Curve and each one holds a data structure that helps store using the top left corner point and bottom right-hand corner point. 
