@@ -107,6 +107,35 @@ The main function takes two arguments the weights and the video. The weights wer
    droplets_on_screen = 0
    ```
 ## Step 2: The Main While Loop
+This portion will cover what the main while loop will do which is how the algorithm runs on every frame. 
+
+1. Droplets on screen are part of the hard-coded Droplet Assumptions. ret, frame and those are the frame opening portion of CV2.
+```
+    while video_cap.isOpened():
+        t += 1 #Increment the time
+
+        '''Open the video frames and play it'''
+        ret, frame = video_cap.read()
+
+        # frame = cv2.resize(frame, (1280, 1024))
+
+        if not ret:
+            print("Video ended")
+            break
+
+        if t > 0:
+            print(t)
+            '''Droplets on screen is to get how many droplets should be on screen at any given time t.
+            Result holds the model's detections. Found set is used to be compared to all the droplets to see if there's a mising one. Numbers detected operates similarly
+            Labels is to generate the strings/text for the bounding boxes of the detections
+            '''
+            droplets_on_screen = get_droplets_on_screen(t, droplets_on_screen, all_droplets, course)
+```
+3. 
+
+
+
+
 
 
     
