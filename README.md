@@ -91,20 +91,20 @@ The main function takes two arguments the weights and the video. The weights wer
 
    ```
    all_droplets = set()
-       course = build_course()
-       x_y_map = build_x_y_map(course)
-       box = sv.BoxAnnotator(text_scale=0.3)
-       speed_threshold = 5
-       # model, video_cap = load_mac_files()
-       model = YOLO(weights_path)
-       video_cap = cv2.VideoCapture(video_path)
+   course = build_course()
+   x_y_map = build_x_y_map(course)
+   box = sv.BoxAnnotator(text_scale=0.3)
+   speed_threshold = 5
+   # model, video_cap = load_mac_files()
+   model = YOLO(weights_path)
+   video_cap = cv2.VideoCapture(video_path)
    
-       if not video_cap.isOpened():
-           print("Error: Video file could not be opened.")
-           return
+   if not video_cap.isOpened():
+        print("Error: Video file could not be opened.")
+        return
    
-       '''Initializes Time t to help debug on specific frames or time intervals of the video. Droplets on screen is a counter for how many droplets to expect at any given time t'''    
-       t = 0
-       droplets_on_screen = 0
+   '''Initializes Time t to help debug on specific frames or time intervals of the video. Droplets on screen is a counter for how many droplets to expect at any given time t'''    
+   t = 0
+   droplets_on_screen = 0
    ```
     
