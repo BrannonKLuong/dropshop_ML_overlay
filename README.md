@@ -269,7 +269,36 @@ class Droplet():
                     course.segments_in_order[self.current_section + 1].add_droplet(droplet)
                #----------------------------------------------------------------------------#
 ```
-4. Update Last Seen attempts to dynamically update the average speed of a droplet. There are a handful of complexities to consider while designing this portion of the algorithm. 
+4. Update Last Seen attempts to dynamically update the average speed of a droplet. There are a handful of complexities to consider while designing this portion of the algorithm. The logic for Straight uses the difference between where it was last seen either on an x or a y. The difference in distance/time passed = new speed. 
+## Note Dec 14, 2023, 8:19 PM Y logic for a trajectory is not present, needs to be added. Also, it only slows down towards the center but doesn't speed it back up as it leaves.
+The curve speed is updated dynamically as well but utilizes a percentage threshold based on the proximity to the center of the curve. The total length of the curve is denoted by its width in x and proximity to the center by any given x value to the center. Since droplets slow down in curves, the algorithm attempts to replicate this process by reducing the speed as it approaches the center of the curve. This prevents the Droplet from exponentially leaving the Curve since it is a quadratic equation and the threshold here is hard coded as 0.3 preventing it from coming to a complete stop. Future implementations will need to find a better way to handle it to prevent it from coming to a complete stop.
+# Insert Drawing of Droplet Approaching Center and slowing down
+```
+    def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
+        self.x = mid[0]
+        self.y = mid[1]
+
+        if not self.last_detection:
+            self.last_detection = (mid, t)
+            return
+        else:
+            if isinstance(x_y_map[mid], Straight):
+                last_x, curr_x, last_t = self.last_detection[0][0], mid[0], self.last_detection[1]
+                if t != last_t: #This line prevents Zero Division Error
+                    new_trajectory =  max((last_x - curr_x), (curr_x - last_x))//max((last_t - t), (t - last_t))
+                    if new_trajectory and new_trajectory <= speed_threshold:
+                        self.trajectory = new_trajectory
+            else:
+                current_curve = x_y_map[mid]
+                middle_curve_x = current_curve.mid[0]
+                start_x, end_x = current_curve.start[0], current_curve.end[0]
+                total_length = abs((start_x - end_x))
+                proximity_to_center = abs(middle_curve_x - self.x)
+                if proximity_to_center/total_length * self.curve_speed >= 0.3 # <--- Hard Coded Speed Threshold: 
+                    self.curve_speed *= proximity_to_center/total_length 
+            self.last_detection = (mid, t)
+```
+5. 
 
 
 
