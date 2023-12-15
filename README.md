@@ -19,6 +19,12 @@ Cyan/Aqua boxes inside the purple boxes are Python-initialized droplets to store
 If a detection is missed then the algorithm will attempt to predict where it'll be using the fact the Droplet is in a straight or curve traveling in 1 direction
 #### Note get_droplet_on_screen() is hard-coded to initialize droplets at time T and location (x, y) referring to a dispenser. So varies by video
 
+# The Design
+## This following portion will elaborate on the design process.
+
+# The Problem: 
+#### Previous Algorithms would lose track of the droplets in the chip. When those droplets are reacquired by the computer vision they'd be labeled a new droplet. Droplets being lost by computer vision or former models are described as disappearances. Additionally, previous implementations used limited forms of Labeling such as Model provided labeling or incrementing counter labeling.  
+
 1. Pass in weights_path which is a file of weights trained with YoloV8 and a video path to main()
     ```if __name__ == '__main__':
     '''Start Time and End Time is a timer to measure run time'''
