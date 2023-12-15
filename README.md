@@ -72,10 +72,31 @@ The main function takes two arguments the weights and the video. The weights wer
     return course
     ```
 
-4. Course or build course is designed in one of two forms. Using the User Interface the User draws bounding boxes and returns the same data or for testing purposes a hard-coded version list of arrays. For the sake of explanation, I'll be following a hard-coded version. The following function is used with the belief that the algorithm will do one of two things. Either save the following data structure and load it or have time before the experiment begins to initialize it. The variable <b>x_y_map</b> will run through every segment of the course and map every single (x, y) coordinate inside of the provided drawn course to a dictionary. The idea is to trade the start time before the algorithm is fixed at some O(n<sup>2</sup>) for each of the x by y boxes to help expedite the search process throughout the algorithm. This way every detection returning some (x, y) can be mapped to a dictionary of its corresponding section. This allows us to quickly receive the direction or the direction in which the detection should be traveling. 
+4. Course or build course is designed in one of two forms. One uses the User Interface the bounding box the user draws returns the same data that the testing purpose uses. For testing purposes, the course is initialized in a hard-coded way in two lists holding each Segment's data. For the sake of explanation, I'll be following a hard-coded version. The following function is designed with the idea that the algorithm will do one of two things. Load the data structure once and save it every time the same course is used or load the course before the experiment begins. The variable <b>x_y_map</b> will run through every segment of the course from the arrays and map every single (x, y) coordinate to its corresponding segment. The idea is to do a trade-off where the initial cost is some O(n<sup>2</sup>) for each of the x by y boxes for a future O(1) look-up time during the actual run of the algorithm. This way every detection returning some (x, y) can be mapped to a dictionary of its corresponding section. This allows us to quickly receive the data of the segment and the direction in which the detection should be traveling.
+    ```
+    x_y_map = build_x_y_map(course)
+   def build_x_y_map(course: Path) -> {(int, int): Path}:
+       '''
+       Builds a python dictionary that stores every (x, y) coordinate inside a path segment/section
+       to map it to a specific segment so we can later check that queue associated to that segment 
+       with each detection
+       '''
+       
+       ret_dic = {}
+       for course in course.segments_in_order:
+           x1, y1 = course.top_left
+           x2, y2 = course.bottom_right
+           smaller_x, bigger_x = min(x1, x2), max(x1, x2)
+           smaller_y, bigger_y = min(y1, y2), max(y1, y2)
+           for i in range(smaller_x, bigger_x + 1): 
+               for j in range(smaller_y, bigger_y + 1):
+                   ret_dic[(i, j)] = course
+       return ret_dic
+    ```
+6. 
 
     
-6. Each Segment is either a Straight or a Curve and each one holds a data structure that helps store using the top left corner point and bottom right-hand corner point. 
+7. Each Segment is either a Straight or a Curve and each one holds a data structure that helps store using the top left corner point and bottom right-hand corner point. 
 Straights are simple only having an add droplet and remove droplet feature with most parameters passed in by the User. 
 
     class Straight():
@@ -93,7 +114,7 @@ Straights are simple only having an add droplet and remove droplet feature with 
               '''Removes a droplet from this segments queue'''
               self.queue.remove(droplet)
               
-7. Curves are more complex it needs a corresponding start, middle, and endpoint which calls a quadratic function to solve for a, b, and c in ax^2 + bx + c and a function
+8. Curves are more complex it needs a corresponding start, middle, and endpoint which calls a quadratic function to solve for a, b, and c in ax^2 + bx + c and a function
 predict y that helps infer the location of the droplet
 
     class Curve():
@@ -152,7 +173,7 @@ predict y that helps infer the location of the droplet
               a, b, c = self.quadratic_coef
               return a * (x ** 2) + b * x + c
 
-8. Every Python object droplet holds its id, (x, y), trajectory, what section it's currently in, the last time it was seen, and a different speed for curves.
+9. Every Python object droplet holds its id, (x, y), trajectory, what section it's currently in, the last time it was seen, and a different speed for curves.
 Its primary function is
 ### update_position which updates its position this is the logic in the case it's not detected it updates depending on where it was in the curve.
 ### update_section When the droplet is detected outside of the section it's currently in move the data over to the next segment and the next segment.
