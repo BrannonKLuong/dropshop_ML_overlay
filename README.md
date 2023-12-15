@@ -1,5 +1,4 @@
 # Design and Implementation of DropShop Algorithm
-
 ## Summary:
 A brief high-level explanation of how the current implementation works is that every 
 detection provided by the Machine Learning Model YoloV8 will check to find its closest droplet. 
@@ -107,4 +106,7 @@ The main function takes two arguments the weights and the video. The weights wer
    t = 0
    droplets_on_screen = 0
    ```
+## Step 2: The Main While Loop
+
+
     
