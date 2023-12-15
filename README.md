@@ -269,7 +269,7 @@ class Droplet():
                     course.segments_in_order[self.current_section + 1].add_droplet(droplet)
                #----------------------------------------------------------------------------#
 ```
-4. 
+4. Update Last Seen attempts to dynamically update the average speed of a droplet. There are a handful of complexities to consider while designing this portion of the algorithm. 
 
 
 
