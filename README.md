@@ -11,19 +11,23 @@ This is denoted in the algorithm as one of the following:
    xone, yone, xtwo, ytwo, id, confidence, class_in_model = data
    xone, yone, xtwo, ytwo, confidence, class_in_model = data
 ```
-Each detection is mapped to the Droplets that were initialized based on the facts that we assume we know when and where they begin. 
-Each detection is then mapped to each droplet and subsequently updated the positions of that Droplet.
+Each detection is mapped to the Droplets that were initialized based on the facts that with the assumptions of when and where they begin. 
+Each detection is then mapped to each droplet and subsequently updated in the positions of that Droplet.
 Green boxes are straight segments, Blue boxes are Curve segments, and red dots are points along the curve to calculate the quadratic coefficients a, b, and c.
 Black boxes are dispensers, purple boxes are the ML model's detections (the left number is ID, the right number is confidence),
 Cyan/Aqua boxes inside the purple boxes are Python-initialized droplets to store data. 
 If a detection is missed then the algorithm will attempt to predict where it'll be using the fact the Droplet is in a straight or curve traveling in 1 direction
-#### Note get_droplet_on_screen() is hard-coded to initialize droplets at time T and location (x, y) referring to a dispenser. So varies by video
+#### Note get_droplet_on_screen() is hard-coded to initialize droplets at time T and location (x, y) referring to a dispenser. So this hard code varies by video
 
 # The Design
 ## This following portion will elaborate on the design process.
 
 # The Problem: 
-#### Previous Algorithms would lose track of the droplets in the chip. When those droplets are reacquired by the computer vision they'd be labeled a new droplet. Droplets being lost by computer vision or former models are described as disappearances. Additionally, previous implementations used limited forms of Labeling such as Model provided labeling or incrementing counter labeling.  
+#### Previous Algorithms would lose track of the droplets in the chip. When those droplets are reacquired by the computer vision they'd be labeled a new droplet. Droplets being lost by computer vision or former models are described as disappearances. Additionally, previous implementations used limited forms of Labeling such as Model provided labeling or incrementing counter labeling. 
+
+# Solution and Approach:
+
+#### The solution leverages the simplicity of knowing that the course is consistent. Meaning that the droplets travel across a fixed path. The implementation must also keep in mind that Machine Learning Models do not explicitly have a form of carrying information over to determine consecutive frames. Tracking algorithms such as Kalman's algorithm estimate where an object will be based on its trajectory from previous frames and its current position in current frames. Kalman's filter is ideal for more complex environments. Maintaining this logic the design of this implementation of Dropshop uses Droplet objects to retain as much information to infer the position. Due to the simplicity of the Course lay the following was used to infer the future position of droplets. 
 
 1. Pass in weights_path which is a file of weights trained with YoloV8 and a video path to main()
     ```if __name__ == '__main__':
