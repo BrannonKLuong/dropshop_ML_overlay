@@ -53,6 +53,29 @@ The main function takes two arguments the weights and the video. The weights wer
 2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects.
     ```
     all_droplets = set()
+    def build_course() -> Path:
+    '''This builds the Path object assuming I know the course before hand. Add the segments to the course's queue
+    For curves add the start, middle, end points
+    
+    11/28/2023 This function should be replaced by the interface by drawing out the course. However can be kept to test repeating cases through either hard code or saved file
+    '''
+    course = Path()
+
+    lst_of_segments = [Straight((85, 50), (460, 70), (-1, 0)),  Curve((45, 50), (85, 110), (-1, 1)), Straight((45, 110), (60, 160), (0, 1)),
+                       Curve((45, 160), (100, 205), (1, 1)), Straight((100, 180), (560, 205), (1, 0)),  Curve((560, 180), (600, 220), (1, 1)),
+                       Straight((580, 220), (600, 300), (0, 1)), Curve((560, 300), (600, 340), (-1, 1)), Straight((0, 320), (560, 340), (-1, 0))]
+    
+    lst_of_sme = [None, ((85, 60), (60, 80), (50, 110)), None, ((50, 160), (70, 190), (100, 195)), None, ((560, 193), (580, 200), (590, 220)), None, ((590, 300), (580, 322), (560, 330)), None]
+
+    for i in range(len(lst_of_segments)):
+        segment = lst_of_segments[i]
+        course.add_segment(segment)
+        if isinstance(segment, Curve):
+            s, m, e = lst_of_sme[i]
+            segment.add_sme(s, m, e)
+            
+    return course
+
     ```
 4. Course or build course is designed in one of two forms. Using the User Interface the User draws bounding boxes and returns the same data or for testing purposes a hard-coded version list of arrays.
    
