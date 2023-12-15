@@ -241,17 +241,36 @@ class Droplet():
         segment = course.segments_in_order[self.current_section]
         direction_x, direction_y = segment.direction
         if isinstance(segment, Straight):
+            #-----------------------------------------------#
             if direction_x and not direction_y:
                 self.x += (self.trajectory * direction_x)
             else:
                 self.y += (self.trajectory * direction_y)
+            #-----------------------------------------------#   
         else:
             self.x += (self.curve_speed * direction_x)
             self.y = segment.predict_y(self.x)
         self.update_section(course, droplet)
         return (self.x, self.y)
 ```
-3. 
+3. The Update section takes any time that a Droplet moves position and checks if that droplet has moved into a segment along the course. It simply keys into the current segment gets the top left and bottom right (x, y) coordinates, and checks if the droplet is outside of it. If so update the section. The ladder half of the code in the commented "-----" has some implementation attempting to carry over data. This portion should be able to be removed entirely since the algorithm uses a global data structure. The idea with the previous design and this implementation was to have the droplets stored in the current segment and the next segment. The reason was because there was no easy way to transfer the data without it being lost. Ideally, the data would be seen in between two segments at the perfect time and update the data. Removing it and adding it was rarely perfect so the droplet would simply appear in the next segment, remove itself, then be lost before it's updated into the next segment. 
+
+```
+    def update_section(self, course: Path, droplet) -> None:
+        segment = course.segments_in_order[self.current_section]
+        left, right, top, bot = segment.top_left[0], segment.bottom_right[0], segment.top_left[1], segment.bottom_right[1]
+        if self.x < left or self.x > right or self.y < top or self.y > bot:
+            if self.current_section < len(course.segments_in_order):
+                course.segments_in_order[self.current_section].remove_droplet(droplet)
+                self.current_section += 1
+                course.segments_in_order[self.current_section].add_droplet(droplet)
+               #----------------------------------------------------------------------------#
+                if self.current_section + 1 < len(course.segments_in_order):
+                    course.segments_in_order[self.current_section + 1].add_droplet(droplet)
+               #----------------------------------------------------------------------------#
+```
+4. 
+
 
 
 
