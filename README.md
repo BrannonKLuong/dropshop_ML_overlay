@@ -76,12 +76,6 @@ The main function takes two arguments the weights and the video. The weights wer
     ```
     x_y_map = build_x_y_map(course)
    def build_x_y_map(course: Path) -> {(int, int): Path}:
-       '''
-       Builds a python dictionary that stores every (x, y) coordinate inside a path segment/section
-       to map it to a specific segment so we can later check that queue associated to that segment 
-       with each detection
-       '''
-       
        ret_dic = {}
        for course in course.segments_in_order:
            x1, y1 = course.top_left
@@ -93,5 +87,24 @@ The main function takes two arguments the weights and the video. The weights wer
                    ret_dic[(i, j)] = course
        return ret_dic
     ```
+4. The remaining variables: box = sv.BoxAnnotator() is an ultralytics provided class to draw boxes. Speed Threshold is some arbitrarily chosen threshold for the speed of droplets. model is an initialized Yolo Model with the weights from the weighted path in Step 0 as its parameter. video cap is a cv2 loaded VideoCapture function using weight path as its parameter. t is a counter that helps show what frame the video is on. Droplets on screen are a global variable so that the algorithm knows how many droplets have been initialized this too is hard coded.
 
+   ```
+   all_droplets = set()
+       course = build_course()
+       x_y_map = build_x_y_map(course)
+       box = sv.BoxAnnotator(text_scale=0.3)
+       speed_threshold = 5
+       # model, video_cap = load_mac_files()
+       model = YOLO(weights_path)
+       video_cap = cv2.VideoCapture(video_path)
+   
+       if not video_cap.isOpened():
+           print("Error: Video file could not be opened.")
+           return
+   
+       '''Initializes Time t to help debug on specific frames or time intervals of the video. Droplets on screen is a counter for how many droplets to expect at any given time t'''    
+       t = 0
+       droplets_on_screen = 0
+   ```
     
