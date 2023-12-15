@@ -6,7 +6,7 @@ detection provided by the Machine Learning Model YoloV8 will check to find its c
 Every frame in the video is analyzed with the machine learning (ML) model which produces
 an array of detections with corresponding information 
 x1, y1, x2, y2, id (this may or not be present depending on how the data was labeled), confidence percentage, class defined in the model (also dependent on how data was labeled)
-This is denoted in the algorithm as one of the following.
+This is denoted in the algorithm as one of the following:
 ```
    xone, yone, xtwo, ytwo, id, confidence, class_in_model = data
    xone, yone, xtwo, ytwo, confidence, class_in_model = data
