@@ -41,7 +41,7 @@ The main function begins with a Python clock timer to measure the run time of th
 
 The main function takes two arguments the weights and the video. The weights were generated in the previous step and should be an accessible file path. The video can be passed in any acceptable format. Note: for future implementation, the hope is to replace this video with the camera path.
 
-1. Start the section of the code and call main
+1. Start the section of the code and call the main
     ```if __name__ == '__main__':
     '''Start Time and End Time is a timer to measure run time'''
     start_time = time.perf_counter()
@@ -50,27 +50,12 @@ The main function takes two arguments the weights and the video. The weights wer
     execution_time = end_time - start_time
     print(f"Execution time: {execution_time:.2f} seconds")
     ```
-2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure 
-
-    ```class Path():
-          def __init__(self) -> None:
-              self.segments_in_order = []
-          
-          def add_segment(self, new_segment) -> None:
-              '''Adds a segment of the course into the Paths array'''
-              self.segments_in_order.append(new_segment)
-      
-          def add_droplet_to_queues(self, droplet) -> None:
-              '''Adds droplets to the corresponding queue in each segment. If the segment isn't last in the list then
-              add it to the correct one and the next one. That way we can infer will it will be and remove it accordingly'''
-              length = len(self.segments_in_order)
-              if length > 1 and droplet.current_section + 1 < length:
-                  self.segments_in_order[droplet.current_section + 1].add_droplet(droplet)
-              self.segments_in_order[droplet.current_section].add_droplet(droplet)
-              print([drop.id for drop in self.segments_in_order[droplet.current_section].queue])
-    ```
+2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure to store the droplet objects.
+``` all_droplets = set() ```
+4. Course or build course is designed in one of two forms. Using the User Interface the User draws bounding boxes and returns the same data or for testing purposes a hard-coded version list of arrays.
+   
     
-3. Each Segment is either a Straight or a Curve and each one holds a data structure that helps store using the top left corner point and bottom right-hand corner point. 
+5. Each Segment is either a Straight or a Curve and each one holds a data structure that helps store using the top left corner point and bottom right-hand corner point. 
 Straights are simple only having an add droplet and remove droplet feature with most parameters passed in by the User. 
 
     class Straight():
@@ -88,7 +73,7 @@ Straights are simple only having an add droplet and remove droplet feature with 
               '''Removes a droplet from this segments queue'''
               self.queue.remove(droplet)
               
-4. Curves are more complex it needs a corresponding start, middle, and endpoint which calls a quadratic function to solve for a, b, and c in ax^2 + bx + c and a function
+6. Curves are more complex it needs a corresponding start, middle, and endpoint which calls a quadratic function to solve for a, b, and c in ax^2 + bx + c and a function
 predict y that helps infer the location of the droplet
 
     class Curve():
@@ -147,7 +132,7 @@ predict y that helps infer the location of the droplet
               a, b, c = self.quadratic_coef
               return a * (x ** 2) + b * x + c
 
-5. Every Python object droplet holds its id, (x, y), trajectory, what section it's currently in, the last time it was seen, and a different speed for curves.
+7. Every Python object droplet holds its id, (x, y), trajectory, what section it's currently in, the last time it was seen, and a different speed for curves.
 Its primary function is
 ### update_position which updates its position this is the logic in the case it's not detected it updates depending on where it was in the curve.
 ### update_section When the droplet is detected outside of the section it's currently in move the data over to the next segment and the next segment.
