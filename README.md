@@ -73,6 +73,7 @@ The main function takes two arguments the weights and the video. The weights wer
     ```
 
 4. Course or build course is designed in one of two forms. One uses the User Interface the bounding box the user draws returns the same data that the testing purpose uses. For testing purposes, the course is initialized in a hard-coded way in two lists holding each Segment's data. For the sake of explanation, I'll be following a hard-coded version. The following function is designed with the idea that the algorithm will do one of two things. Load the data structure once and save it every time the same course is used or load the course before the experiment begins. The variable <b>x_y_map</b> will run through every segment of the course from the arrays and map every single (x, y) coordinate to its corresponding segment. The idea is to do a trade-off where the initial cost is some O(n<sup>2</sup>) for each of the x by y boxes for a future O(1) look-up time during the actual run of the algorithm. This way every detection returning some (x, y) can be mapped to a dictionary of its corresponding section. This allows us to quickly receive the data of the segment and the direction in which the detection should be traveling.
+
     ```
     x_y_map = build_x_y_map(course)
    def build_x_y_map(course: Path) -> {(int, int): Path}:
@@ -93,6 +94,7 @@ The main function takes two arguments the weights and the video. The weights wer
                    ret_dic[(i, j)] = course
        return ret_dic
     ```
+   
 6. 
 
     
