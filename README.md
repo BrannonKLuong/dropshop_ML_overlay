@@ -7,7 +7,7 @@ Green boxes are straight segments, Blue boxes are Curve segments, red dots are p
 black boxes are dispensers, purple boxes are ML model's detections (the top left-hand number is ID, the right-hand number is confidence),
 Cyan/Aqua boxes inside the purple boxes are Python Python-initialized droplets to store data. 
 If a detection is missed then predict where it'll be using the fact the Droplet is in a straight or curve traveling in 1 direction
-### Important Note get_droplet_on_screen() is hard coded to initialize droplets at time T and location (x, y) referring to a dispenser. So varies by video
+#### Note get_droplet_on_screen() is hard coded to initialize droplets at time T and location (x, y) referring to a dispenser. So varies by video
 1. Pass in weights_path which is a file of weights trained with YoloV8 and a video path to main()
     ```if __name__ == '__main__':
     '''Start Time and End Time is a timer to measure run time'''
