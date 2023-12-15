@@ -387,3 +387,12 @@ class Curve():
         return a * (x ** 2) + b * x + c
 ```
 ## Step 7: Future Implementations
+The Future of this current implementation should consist of a handful of things. First and foremost would be the removal of the localized data set logic denoted above in # ----- #. It is not all of it but remnants still exist. After which transition to a better data structure to reduce the overall run time to compare detections. I speculate that it is possible to use a queue in the following way. Initialize a global queue that can be accessed any where. The queue might need to be a priority queue weighted by what segment or how far the droplet is in the course. For example if a droplet is closer to the end of the course then it should be furtheer in the queue. The initial reason I didn't use a queue was to avoid the fact that we don't know exactly in what order a dispenser would fire and initialize a new droplet. However upon further thought it should be possible to initialize a new droplet at a (x, y) of a dispenser. Do an O(N) insertion by checking every pair of droplets to see if the droplet can be fitted in between two droplets. It's difficult to calculate whether a droplet is in between two given the difference in (x, y) can be in any direction. However, I think there are some  cases we could check for we would traverse FIFO from the end of the course to the start of the course.
+#### Case 1: There are no droplets in the queue add the new Droplets to the Queue
+#### Case 2: There is exactly one Droplet depending on the segment and what direction it's heading either the new droplet is in front or before it
+#### Case 3: The new droplet lands in between 2 Droplets in the same segment. Use the direction of that segment to see which one is further down the course. Place it in between the droplet
+#### Case 4: The new droplet d<sub>new</sub> is inserted between two Droplets. One Droplet d<sub>0</sub> in the segment and one outside in the next segment d<sub>1</sub>. The segment weights must be as follows: d<sub>0</sub> <  d<sub>new</sub>  < d<sub>1</sub>.
+
+#### Case 5: The new droplet d<sub>new</sub> is inserted between two Droplets. One Droplet d<sub>0</sub> in the segment and one outside in the previous segment d<sub>1</sub>. The segment weights must be as follows: d<sub>1</sub> <  d<sub>new</sub>  < d<sub>0</sub>.
+
+Second would be improve the Dynamic 
