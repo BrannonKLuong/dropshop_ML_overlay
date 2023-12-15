@@ -124,11 +124,11 @@ This portion will cover what the main while loop will do which is how the algori
 2.  The result is an array returned by model.track of every detection on the given parameters: The current frame, a tracker (in this case arbitrarily chosen), persist = True which tells it to use previous frames to subsequently carry over information. The number detected is the length of the result used to determine if there's a missing detection. A found set is also used to see which droplets have been found to compare to all droplets to know which one is missing. Labels are a list used to store strings for the labeling of the droplets on the frame.
 
 ```
-droplets_on_screen = get_droplets_on_screen(t, droplets_on_screen, all_droplets, course)
-result = model.track(frame, tracker="bytetrack.yaml", persist=True)[0]
-numbers_detected = len(result)
-found = set()
-labels = []
+            droplets_on_screen = get_droplets_on_screen(t, droplets_on_screen, all_droplets, course)
+            result = model.track(frame, tracker="bytetrack.yaml", persist=True)[0]
+            numbers_detected = len(result)
+            found = set()
+            labels = []
 ```
 3. 
 
