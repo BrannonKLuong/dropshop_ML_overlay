@@ -32,11 +32,16 @@ Frame 3: d1
 
 # Solution and Approach:
 
-#### The solution leverages the simplicity of knowing that the course is consistent. Meaning that the droplets travel across a fixed path. The implementation must also keep in mind that Machine Learning Models do not explicitly have a form of carrying information over to determine consecutive frames. Tracking algorithms such as Kalman's algorithm estimate where an object will be based on its trajectory from previous frames and its current position in current frames. Kalman's filter is ideal for more complex environments. Maintaining this logic the design of this implementation of Dropshop uses Droplet objects to retain as much information to infer the position. Due to the simplicity of the Course lay the following was used to infer the future position of droplets. Initialize a bounding box that shows the direction of the segment of the course and whether the segment is a curve or a straight. A straight, simple in its implementations, modifies the x or y value of a droplet by the direction it's heading. A curve needs to be labeled accurately to utilize the Quadratic equation to predict its traversal along the course's curve. From this point let d<sub>n</sub> denote droplets, course to be the entire path, segments be any part of the course, Det<sub>n</sub>to denote detections.
+#### The solution leverages the simplicity of knowing that the course is consistent. Meaning that the droplets travel across a fixed path. The implementation must also keep in mind that Machine Learning Models do not explicitly have a form of carrying information over to determine and help detect in consecutive frames. Tracking algorithms such as Kalman's algorithm estimate where an object will be based on its trajectory from previous frames and its current position in current frames. Kalman's filter is ideal for more complex environments. Maintaining this logic the design of this implementation of Dropshop uses Droplet objects to retain as much information to infer the position. Due to the simplicity of the Course lay the following was used to infer the future position of droplets. Initialize a bounding box that shows the direction of the segment of the course and whether the segment is a curve or a straight. A straight, simple in its implementations, modifies the x or y value of a droplet by the direction it's heading. A curve needs to be labeled accurately to utilize the Quadratic equation to predict its traversal along the course's curve. From this point let d<sub>n</sub> denote droplets, course to be the entire path, segments be any part of the course, Det<sub>n</sub> to denote detections.
 
+## Step 0: Loading Roboflow and Acquiring Weights and Data
 
+## Step 1: Main and Variable Initialization
+The main function begins with a Python clock timer to measure the run time of the algorithm.
 
-1. Pass in weights_path which is a file of weights trained with YoloV8 and a video path to main()
+The main function takes two arguments the weights and the video. The weights were generated in the previous step and should be an accessible file path. The video can be passed in any acceptable format. Note: for future implementation, the hope is to replace this video with the camera path.
+
+1. Start the section of the code and call main
     ```if __name__ == '__main__':
     '''Start Time and End Time is a timer to measure run time'''
     start_time = time.perf_counter()
@@ -45,9 +50,7 @@ Frame 3: d1
     execution_time = end_time - start_time
     print(f"Execution time: {execution_time:.2f} seconds")
     ```
-2. The main function initializes variables and runs the core logic
-all_droplets stores every droplet in the course at any given point.
-course is a Path object that stores the segments in order. The Path object has a function to add new segments and add droplets to each nested segment's queue.
+2. The first block of the main function before entering the while loops runs a handful of key functions. All Droplets initialize a global data structure 
 
     ```class Path():
           def __init__(self) -> None:
