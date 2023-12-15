@@ -72,9 +72,10 @@ The main function takes two arguments the weights and the video. The weights wer
     ```
 
 4. Course or build course is designed in one of two forms. Using the User Interface the User draws bounding boxes and returns the same data or for testing purposes a hard-coded version list of arrays.
-   
+The following function is used with the belief that the algorithm will do one of two things. Either save the following data structure and load it or have time before the experiment actually begins to initialize it. The variable <b>x_y_map</b>
+
     
-5. Each Segment is either a Straight or a Curve and each one holds a data structure that helps store using the top left corner point and bottom right-hand corner point. 
+6. Each Segment is either a Straight or a Curve and each one holds a data structure that helps store using the top left corner point and bottom right-hand corner point. 
 Straights are simple only having an add droplet and remove droplet feature with most parameters passed in by the User. 
 
     class Straight():
@@ -92,7 +93,7 @@ Straights are simple only having an add droplet and remove droplet feature with 
               '''Removes a droplet from this segments queue'''
               self.queue.remove(droplet)
               
-6. Curves are more complex it needs a corresponding start, middle, and endpoint which calls a quadratic function to solve for a, b, and c in ax^2 + bx + c and a function
+7. Curves are more complex it needs a corresponding start, middle, and endpoint which calls a quadratic function to solve for a, b, and c in ax^2 + bx + c and a function
 predict y that helps infer the location of the droplet
 
     class Curve():
@@ -151,7 +152,7 @@ predict y that helps infer the location of the droplet
               a, b, c = self.quadratic_coef
               return a * (x ** 2) + b * x + c
 
-7. Every Python object droplet holds its id, (x, y), trajectory, what section it's currently in, the last time it was seen, and a different speed for curves.
+8. Every Python object droplet holds its id, (x, y), trajectory, what section it's currently in, the last time it was seen, and a different speed for curves.
 Its primary function is
 ### update_position which updates its position this is the logic in the case it's not detected it updates depending on where it was in the curve.
 ### update_section When the droplet is detected outside of the section it's currently in move the data over to the next segment and the next segment.
