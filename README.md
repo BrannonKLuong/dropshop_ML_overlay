@@ -75,8 +75,8 @@ The main function takes two arguments the weights and the video. The weights wer
             segment.add_sme(s, m, e)
             
     return course
-
     ```
+
 4. Course or build course is designed in one of two forms. Using the User Interface the User draws bounding boxes and returns the same data or for testing purposes a hard-coded version list of arrays.
    
     
