@@ -155,7 +155,20 @@ This portion will cover what the main while loop will do which is how the algori
                         print(exc_type, fname, exc_tb.tb_lineno)
                         continue
 ```
-
+4.  The core of the logic is to find the closest to a given detection.
+```
+def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int)) -> Droplet:
+    closest = float('inf')
+    closest_drop = None
+    for drop in drops_to_consider:
+        drop_point = (drop.x, drop.y)
+        distance = get_distance(drop_point, mid) 
+        if distance < closest:
+            closest_drop = drop
+            closest = distance
+    return closest_drop  
+```
+6.  
 
 
     
