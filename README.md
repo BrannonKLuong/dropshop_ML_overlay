@@ -173,7 +173,7 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int)) -> Drople
 
 An example of how the first implementation was supposed to work: 
 
-![screenshot of the idea of a local data storage (https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/datastorage_first.PNG)
+![screenshot of the idea of a local data storage](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/datastorage_first.PNG)
 
 ```
                     closest_droplet = find_closest_droplet(drops_to_consider, mid)
