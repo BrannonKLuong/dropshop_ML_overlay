@@ -172,7 +172,7 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int)) -> Drople
 5. Once acquiring the closest droplet to a detection it'll be added to a data structure of found. Each droplet will then update its information with the new (x, y) position as well as try to calculate its average trajectory since it's last been seen. If the detection has occurred in a different segment compared to the droplet it just acquired that means the droplet has moved to a new segment. The algorithm will then compare the (x and y) coordinates to compare and update the section accordingly. The initial implementation used a primitive way to carry over data. The idea was to reduce overall average run time by using localized data structures for particular segments. This would allow the algorithm to compare detections to only droplets in the segment it was discovered reducing the overall run time on average from O(n<sub>2</sub>) to some O(n detections * m droplets in that smaller segment). However, this implementation was error-prone and not the ideal way to both carry over data and compare detections to droplets.
 
 An example of how the first implementation was supposed to work: 
-# Insert Image of Example of Data Storage
+# Insert Image of Example of Data Storage ![screenshot of the idea of a local data storage](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/datastorage_first.PNG)
 ```
                     closest_droplet = find_closest_droplet(drops_to_consider, mid)
                     found.add(closest_droplet)
