@@ -176,7 +176,9 @@ As you can imagine each segment would ideally have a localized data structure th
 ![screenshot of the idea of local data storage](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/datastorage_first.PNG)
 
 ## What ended up happening was this:
+![screen shot of data carry over implementation](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/datastorage_first_result.PNG)
 
+In attempts to compensate for the uncertainty of when the data should be transferred over, a copy of the data would be carried in the next set to allow for ease of deletion and transfer.
 ```
                     closest_droplet = find_closest_droplet(drops_to_consider, mid)
                     found.add(closest_droplet)
