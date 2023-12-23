@@ -282,6 +282,7 @@ If the camera angle is too far tilted then the drawn boxes must be larger to acc
 The curve speed is updated dynamically as well but utilizes a percentage threshold based on the proximity to the center of the curve. The total length of the curve is denoted by its width in x and proximity to the center by any given x value to the center. Since droplets slow down in curves, the algorithm attempts to replicate this process by reducing the speed as it approaches the center of the curve. This prevents the Droplet from exponentially leaving the Curve since it is a quadratic equation and the threshold here is hard coded as 0.3 preventing it from coming to a complete stop. <b>Future implementations</b> will need to find a better way to handle it to prevent it from coming to a complete stop.
 
 ![example of trajectory being throttled by percentage calculated by proximity to center](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/curve_speed.png)
+
 ```
     def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
         self.x = mid[0]
