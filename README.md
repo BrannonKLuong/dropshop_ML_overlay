@@ -37,18 +37,22 @@ Frame 3: d1
 ### Requirements
 ### Python 3.11 >= Python 3.x
 Ultralytics is not yet compatible with Python 3.12
+
 ### Robowflow
 ```
 pip install roboflow
 ```
+
 ### Ultralytics
 ```
 pip install ultralytics
 ```
+
 ### Opencv CV2
 ```
 pip install opencv-python==4.8.0.76
 ```
+
 ## Step 1: Main and Variable Initialization
 The main function begins with a Python clock timer to measure the run time of the algorithm.
 
