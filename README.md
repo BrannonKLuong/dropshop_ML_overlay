@@ -408,7 +408,7 @@ First and foremost would be the removal of the localized data set logic denoted 
 
 #### Case 5: The new droplet d<sub>new</sub> is inserted between two Droplets. One Droplet d<sub>0</sub> in the segment and one outside in the previous segment d<sub>1</sub>. The segment weights must be as follows: d<sub>1</sub> <  d<sub>new</sub>  < d<sub>0</sub>.
 
-#### Case 6: The new droplet d<sub>new</sub> is inserted between two Droplets. One Droplet in the segment before d<sub>0</sub> and one in the segment after d<sub>1</sub>. he segment weights must be as follows: d<sub>0</sub> <  d<sub>new</sub>  < d<sub>1</sub>.
+#### Case 6: The new droplet d<sub>new</sub> is inserted between two Droplets. One Droplet in the segment before d<sub>0</sub> and one in the segment after d<sub>1</sub>. The segment weights must be as follows: d<sub>0</sub> <  d<sub>new</sub>  < d<sub>1</sub>.
 
 If the insertion implementation is successful then we have what is a sorted list of droplets. Ordered in FIFO. Since the list is ordered we could then use a Binary Search Implementation where the detection is first compared to the middle segment. If it is closer to the start throw out the half closer to the end and vice versa. If this is achieved and accurately accomplished in most cases we can bring down the worst-case run time to be <b>O(nlogn)</b>
 
