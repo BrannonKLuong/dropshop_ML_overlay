@@ -128,6 +128,7 @@ The main function takes two arguments the weights and the video. The weights wer
 This portion will cover what the main while loop will do which is how the algorithm runs on every frame. 
 
 1. Droplets on screen are part of the hard-coded Droplet Assumptions. ret, frame and those are the frame opening portion of CV2.
+#### Future Implementations must find a way to replace Droplets_on_screen by acquiring the information from the dispensers.
 ```
     while video_cap.isOpened():
         t += 1 #Increment the time
