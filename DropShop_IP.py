@@ -60,6 +60,7 @@ class Droplet():
                     # Adding this clause in the case the detection is outside of the course if the box is not perfect it will remain what the current section of the droplet is
                     # Might have to assign it to be the segment closest to it.
                     return
+    
     def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
         self.x = mid[0]
         self.y = mid[1]
@@ -68,11 +69,19 @@ class Droplet():
             return
         else:
             if isinstance(x_y_map[mid], Straight):
-                last_x, curr_x, last_t = self.last_detection[0][0], mid[0], self.last_detection[1]
-                if t != last_t: #This line prevents Zero Division Error
-                    new_trajectory =  max((last_x - curr_x), (curr_x - last_x))//max((last_t - t), (t - last_t))
-                    if new_trajectory and new_trajectory <= speed_threshold:
-                        self.trajectory = new_trajectory
+                direction_x, direction_y = x_y_map[mid].direction
+                if direction_x and not direction_y:
+                    last_x, curr_x, last_t = self.last_detection[0][0], mid[0], self.last_detection[1]
+                    if t != last_t: #This line prevents Zero Division Error
+                        new_trajectory =  max((last_x - curr_x), (curr_x - last_x))//max((last_t - t), (t - last_t))
+                        if new_trajectory and new_trajectory <= speed_threshold:
+                            self.trajectory = new_trajectory
+                else:
+                    last_y, curr_y, last_t = self.last_detection[0][1], mid[1], self.last_detection[1]
+                    if t != last_t: #This line prevents Zero Division Error
+                        new_trajectory =  max((last_y - curr_y), (curr_y - last_y))//max((last_t - t), (t - last_t))
+                        if new_trajectory and new_trajectory <= speed_threshold:
+                            self.trajectory = new_trajectory
             else:
                 current_curve = x_y_map[mid]
                 middle_curve_x = current_curve.mid[0]
@@ -133,6 +142,7 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int)) -> Drople
     closest = float('inf')
     closest_drop = None
     for drop in drops_to_consider:
+        # print()
         drop_point = (drop.x, drop.y)
         distance = get_distance(drop_point, mid) 
         if distance < closest:
@@ -160,8 +170,7 @@ def build_course() -> Path:
         course.add_segment(segment)
         if isinstance(segment, Curve):
             s, m, e = lst_of_sme[i]
-            segment.add_sme(s, m, e)
-            
+            segment.add_sme(s, m, e)   
     return course
 
 def label_course(frame, course) -> None:
@@ -218,7 +227,6 @@ def get_droplets_on_screen(t : int, num_droplets: int, drops:{Droplet}, course) 
         return 8 
     else:
         return num_droplets
-
 
 def where_droplets_should_start(frame) -> None:
     cv2.rectangle(frame, (445, 55), (455, 65), (255, 0, 0), 2)
@@ -319,10 +327,10 @@ def main(weights_path, video_path):
                         continue
                     
                     closest_droplet = find_closest_droplet(drops_to_consider, mid)
-                    try:
-                        print("Closest Droplet: " +  str(closest_droplet.id) + " Current Section: " + str(closest_droplet.current_section))
-                    except:
-                        continue
+                    # try:
+                    #     print("Closest Droplet: " +  str(closest_droplet.id) + " Current Section: " + str(closest_droplet.current_section))
+                    # except:
+                    #     continue
                     found.add(closest_droplet)
 
                     closest_droplet.update_last_seen(mid, t, x_y_map, speed_threshold)
