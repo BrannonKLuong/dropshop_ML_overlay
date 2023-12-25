@@ -9,12 +9,14 @@ import time
 class Path():
     def __init__(self) -> None:
         self.segments_in_order = []
+        "This dictionary maps every segment to an idx"
         self.segments_index_map = {}
         self.idx = 0
     
     def add_segment(self, new_segment) -> None:
         self.segments_index_map[new_segment] = self.idx
         self.idx += 1
+        "This assigns the index"
         self.segments_in_order.append(new_segment)
 
 class Droplet():
@@ -50,7 +52,8 @@ class Droplet():
         left, right, top, bot = segment.top_left[0], segment.bottom_right[0], segment.top_left[1], segment.bottom_right[1]
         if self.x < left or self.x > right or self.y < top or self.y > bot:
             if self.current_section <= len(course.segments_in_order):
-                # self.current_section += 1
+                # This new section uses the index of the segment it was detected in as opposed to incrementing it
+                # Implemented this because in the video when the dispensers are fired there's a chance the droplets move backwards up the channel
                 self.current_section = course.segments_index_map[map_of_segments[(self.x, self.y)]]
     
     def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
