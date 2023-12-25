@@ -29,7 +29,7 @@ class Droplet():
         self.last_detection = None
         self.curve_speed = trajectory
 
-    def update_position(self, course: Path, droplet, map_of_segments) -> (int, int):
+    def update_position(self, course: Path, map_of_segments) -> (int, int):
         segment = course.segments_in_order[self.current_section]
         direction_x, direction_y = segment.direction
         if isinstance(segment, Straight):
@@ -44,18 +44,22 @@ class Droplet():
         else:
             self.x += (self.curve_speed * direction_x)
             self.y = segment.predict_y(self.x)
-        self.update_section(course, droplet, map_of_segments)
+        self.update_section(course, map_of_segments)
         return (self.x, self.y)
     
-    def update_section(self, course: Path, droplet,  map_of_segments) -> None:
+    def update_section(self, course: Path, map_of_segments) -> None:
         segment = course.segments_in_order[self.current_section]
         left, right, top, bot = segment.top_left[0], segment.bottom_right[0], segment.top_left[1], segment.bottom_right[1]
         if self.x < left or self.x > right or self.y < top or self.y > bot:
             if self.current_section <= len(course.segments_in_order):
                 # This new section uses the index of the segment it was detected in as opposed to incrementing it
                 # Implemented this because in the video when the dispensers are fired there's a chance the droplets move backwards up the channel
-                self.current_section = course.segments_index_map[map_of_segments[(self.x, self.y)]]
-    
+                try:
+                    self.current_section = course.segments_index_map[map_of_segments[(self.x, self.y)]]
+                except:
+                    # Adding this clause in the case the detection is outside of the course if the box is not perfect it will remain what the current section of the droplet is
+                    # Might have to assign it to be the segment closest to it.
+                    return
     def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
         self.x = mid[0]
         self.y = mid[1]
@@ -253,7 +257,7 @@ def box_drops(drops: {Droplet}, frame) -> None:
 def handle_missings(drops: {Droplet}, found: set, map_course: Path, map_of_segments) -> None:
     missing = drops.difference(found)
     for drop in missing:
-        drop.update_position(map_course, drop, map_of_segments)
+        drop.update_position(map_course, map_of_segments)
         found.add(drop)
 
 def load_mac_files():
@@ -265,7 +269,6 @@ def main(weights_path, video_path):
     all_droplets = set()
     course = build_course()
     x_y_map = build_x_y_map(course)
-    print(course.segments_index_map)
     box = sv.BoxAnnotator(text_scale=0.3)
     speed_threshold = 5
     # model, video_cap = load_mac_files()
@@ -275,6 +278,7 @@ def main(weights_path, video_path):
     if not video_cap.isOpened():
         print("Error: Video file could not be opened.")
         return
+    
     t = 0
     droplets_on_screen = 0
     while video_cap.isOpened():
@@ -324,7 +328,7 @@ def main(weights_path, video_path):
                     closest_droplet.update_last_seen(mid, t, x_y_map, speed_threshold)
                   
                     if x_y_map[mid] != course.segments_in_order[closest_droplet.current_section]:
-                        closest_droplet.update_section(course, closest_droplet, x_y_map)
+                        closest_droplet.update_section(course, x_y_map)
                     
                     box_drops(all_droplets, frame)
 
