@@ -291,39 +291,63 @@ def label_curves_s_m_e(frame, course) -> None:
 def get_droplets_on_screen(t : int, num_droplets: int, drops:{Droplet}, course) -> int:
     if t == 1:
         droplet_1 = Droplet(1, 450, 60, 2)
-        drops.append(droplet_1)
+        insert_and_sort_droplets(droplet_1, drops, course)
         return 1
     elif t == 119:
         droplet_2 = Droplet(2, 315, 60, 1)
-        drops.append(droplet_2)
+        insert_and_sort_droplets(droplet_2, drops, course)
         return 2
     elif t == 153:
         droplet_3 = Droplet(3, 450, 60, 1)
-        drops.append(droplet_3)
+        insert_and_sort_droplets(droplet_3, drops, course)
         return 3
     elif t == 156:
         droplet_4 = Droplet(4, 315, 60, 1)
-        drops.append(droplet_4)
+        insert_and_sort_droplets(droplet_4, drops, course)
         return 4
     elif t == 185:
         droplet_5 = Droplet(5, 450, 60, .5)
-        drops.append(droplet_5)
+        insert_and_sort_droplets(droplet_5, drops, course)
         return 5
     elif t == 222:
         droplet_6 = Droplet(6, 450, 60, .5)
-        drops.append(droplet_6)
+        insert_and_sort_droplets(droplet_6, drops, course)
         return 6
     elif t == 370:
         droplet_7 = Droplet(7, 460, 195, 1, 4)
-        drops.append(droplet_7)
+        insert_and_sort_droplets(droplet_7, drops, course)
         return 7
     elif t == 515:
         droplet_8 = Droplet(8, 315, 195, 1, 4)
-        drops.append(droplet_8)
+        insert_and_sort_droplets(droplet_8, drops, course)
         return 8 
     else:
         return num_droplets
-
+    
+def insert_and_sort_droplets(droplet, lst, course):
+    if not lst:
+        lst.append(droplet)
+        return
+    
+    for i in range(len(lst)):
+        # coordinate, curr_seg, course
+        insertion_distance = determine_total_distance_traveled((droplet.x, droplet.y), course.segments_in_order[droplet.current_section], course)
+        i_th_droplet_travel_distance = determine_total_distance_traveled((lst[i].x, lst[i].y), course.segments_in_order[lst[i].current_section], course)
+        if insertion_distance < i_th_droplet_travel_distance:
+            lst.insert(i, droplet)
+            return
+        else:
+            try:
+                lst.insert(i + 1, droplet)
+                return
+                #Try to insert at the index in front of the current one
+                #If an index error occurs because its at the end of the list then append it to the end
+            except IndexError:
+                lst.append(droplet)
+                return
+    return
+    
+        
 def where_droplets_should_start(frame) -> None:
     cv2.rectangle(frame, (445, 55), (455, 65), (255, 0, 0), 2)
     cv2.rectangle(frame, (315, 55), (325, 65), (255, 0, 0), 2)
