@@ -258,13 +258,10 @@ def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate
 def arc_length(curve, interval_1, interval_2):
     x = Symbol('x')
     a, b, c = curve.quadratic_coef
-    a, b, c = round(a, 4), round(b, 4), round(c, 4) #This number is arbitrarily chosen. Limitations with python will further explain in Git
-    print(a, b, c)
+    a, b, c = round(a, 2), round(b, 2), round(c, 2) #This number is arbitrarily chosen. Limitations with python will further explain in Git
     f = a*x**2 + b*x + c
-    plot(f , (x , 1 , 3))
     f_deriv = Derivative(f, x).doit()
-    pprint(f_deriv)
-    print(f"Arc Length: {Integral(sqrt(1 + (f_deriv **2)), (x, interval_1, interval_2)).doit().evalf()}")
+    return abs(math.floor(Integral(sqrt(1 + (f_deriv **2)), (x, interval_1, interval_2)).doit().evalf()))
 
 
 def load_mac_files():
