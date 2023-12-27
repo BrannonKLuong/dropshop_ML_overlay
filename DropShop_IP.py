@@ -158,7 +158,7 @@ class Curve():
 def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x_y_map) -> Droplet:
     '''As of right now the algorithm to find the closest droplet is Brute Force O(n^2)
     Designing a Recursive/Iterative Algorithm'''
-    acceptable_distance = 5 #Some arbitrarily chosen acceptable distance 
+    acceptable_distance = 20 #Some arbitrarily chosen acceptable distance 
     l, r = 0, len(drops_to_consider) - 1
     print([drop.id for drop in drops_to_consider]) #12/26/2023 6:37pm the current issue is that when reviewing the code the frame timing for which
     #The droplets are initialized are in a different order. The algorithm assumes droplets are sorted in distance travels. so right now at frame 
@@ -173,7 +173,7 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
         m = (l + r)//2
         m_d = arr[m] #m_d is middle droplet the naming is trying to not reassign the variable mid
         print()
-        print(f"(Left, Right): {l, r}")
+        print(f"(Left, Middle, Right): {l, m, r}")
         print(f"Left: {[drop.id for drop in arr[:m]]} Right:{[drop.id for drop in arr[m:]]}.")   
         calc_dist = get_distance((m_d.x, m_d.y), mid)   
         # print(f"(Left, Right): {l, r}")
@@ -191,8 +191,9 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
             left_difference_detection = abs(detection_distance - left_distance)
             print(f"Detection Coordinate: {mid}")
             print(f"Distance Detection Traveled: {detection_distance}")
-            print(f"Distance Left Droplet Traveled: {left_distance}   Difference: {left_difference_detection}")
-            print(f"Distance Right Droplet Traveled: {right_distance}  Difference: {right_difference_detection}")
+            print(f"Distance Left Droplet {arr[l].id} {arr[l].x, arr[l].y} Traveled: {left_distance}   Difference: {left_difference_detection}")
+            print(f"Distance Right Droplet {arr[r].id} {arr[r].x, arr[r].y}  Traveled: {right_distance}  Difference: {right_difference_detection}")
+            print(f"Every Droplet's Information: {[(drop.id, drop.x, drop.y) for drop in arr]}")
             if right_difference_detection <= acceptable_distance:
                 #If right edge is acceptable close return it
                 return arr[r]
