@@ -33,6 +33,7 @@ class Path():
                     else: #If it's going up or down
                         distance_traveled += seg.bottom_right[1] - seg.top_left[1]
                 else:
+                    #This might cause problems when doing calculations since this is using a linear distance as opposed to total distance traveled
                     distance_traveled += get_distance(seg.start, seg.end)
             return distance_traveled
                             
@@ -224,6 +225,7 @@ def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate
     #Now let's get distance already traveled
     if not coordinate:
         return 0
+    coord_x, coord_y = coordinate[0], coordinate[1]
     distanced_traveled = course.segments_index_map[curr_seg][1] #if n - 1 segments have already been traversed add the flat sum of n segments to the distanced traveled
     #Now calculate the distanced traveled in the current nth segment
     #Remember the grid is inverted 0, 0 is the top left so we can use math.abs to get the absolute value of the distanced traveled since the start will be on the right, traveling left the det x should be < than the right most x
@@ -233,18 +235,21 @@ def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate
             if horiz == -1:
                 #Add the distance from the detection's x to the right most x of the segment
                 right_most_x = curr_seg.bottom_right[0]
-                distanced_traveled += right_most_x - coordinate[0]
+                distanced_traveled += right_most_x - coord_x
             else: # if traveling right
                 #Add the distance from detection's x to the left msot x of the segment since traveling right det_x > left_most_x
                 left_most_x = curr_seg.top_left[0]
-                distanced_traveled += coordinate[0] - left_most_x 
+                distanced_traveled += coord_x - left_most_x 
         else: # Traveling vertically
             if vert == -1: #If traveling up: Subtract the detection from the bottom most y. Since Detection y < bottom most y
                 bottom_most_y = curr_seg.bottom_right[1] 
-                distanced_traveled += bottom_most_y - coordinate[1]
+                distanced_traveled += bottom_most_y - coord_y
             else: #if traveling down, top most y < det y
                 top_most_y = curr_seg.top_left[1]
-                distanced_traveled += coordinate[1]  - top_most_y
+                distanced_traveled += coord_y - top_most_y
+    else: #If it's a curve
+        start_pt = curr_seg.start
+        # distanced_traveled += 
     return distanced_traveled
 
 
