@@ -168,7 +168,7 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
     while l <= r:
         if len(arr) == 1:
             return arr[0]
-        if l == r: #If pointers pointing to the same droplet
+        if l == r: #If pointers pointing to the same droplet return it since the rest of the array has been ignored
             return arr[l]   
         m = (l + r)//2
         m_d = arr[m] #m_d is middle droplet the naming is trying to not reassign the variable mid
@@ -194,20 +194,25 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
             print(f"Distance Left Droplet Traveled: {left_distance}   Difference: {left_difference_detection}")
             print(f"Distance Right Droplet Traveled: {right_distance}  Difference: {right_difference_detection}")
             if right_difference_detection <= acceptable_distance:
+                #If right edge is acceptable close return it
                 return arr[r]
             if  left_difference_detection  <= acceptable_distance:
+                #if left edge is acceptably close return it
                 return arr[l]
             if len(arr) == 2:
+                #If length is only two then return the closer of the two
                 if right_difference_detection < left_difference_detection:
                     return arr[r]
                 else:
                     return arr[l]
             else:
+                #Otherwise Binary Search
                 if right_difference_detection < left_difference_detection: 
                     #If the detection is closer to the right most 
                     #Ignore the left half
                     l = m + 1
                 else:
+                    # Other wise ignore the right half.
                     r = m - 1
                 print(f"New (Left, Right): {l, r}")
         # Otherwise compare the distance between left and right
