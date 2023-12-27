@@ -6,9 +6,8 @@ import sys, os
 import math
 import time
 import math
-from sympy.plotting import plot
-from sympy import Symbol, Derivative, Integral, pprint, sqrt
-from sympy.core.rules import Transform
+from scipy.integrate import quad
+import numpy as np
 
 class Path():
     def __init__(self) -> None:
@@ -256,13 +255,24 @@ def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate
     return distanced_traveled
 
 def arc_length(curve, interval_1, interval_2):
-    x = Symbol('x')
-    a, b, c = curve.quadratic_coef
-    a, b, c = round(a, 2), round(b, 2), round(c, 2) #This number is arbitrarily chosen. Limitations with python will further explain in Git
-    f = a*x**2 + b*x + c
-    f_deriv = Derivative(f, x).doit()
-    return abs(math.floor(Integral(sqrt(1 + (f_deriv **2)), (x, interval_1, interval_2)).doit().evalf()))
+    #Take the coefficients from the curve of the quadratic formula
+    a, b, _ = curve.quadratic_coef
+    
+    #a and b have to be rounded or else the issue that the python can not represent very large numbers accurately after a said bit point
+    #rounding 8 runs well for me so I'll leave it at that and test it.
+    a, b = round(a, 8), round(b, 8)#This number is arbitrarily chosen. Limitations with python will further explain in Git
+    
+    #The following applies python's numpy to apply arc length integrals to calculate the distance along a quadratic curve
+    #Quad Integrand is a python library and a designed function to execute the formula of an "Arc Length Parameterization" or "Arc Length of a Quadratic Curve"
+    #Technically the formula is Arc Length Parameterization but the formula denotes deirative of both x(t) and y(t) but the nature of a quadratic formula you will factor out
+    #dx from the formula resulting the the sqrt of (1 + dy/dx**2)
+    #Deratives 1
+    result, _ = quad(integrand, interval_1, interval_2, args=(a, b))
+    print(f"Result of quad: {result}")
+    return round(result, 2) #Arbitrarily chosen decimal place to round to can be tested with more or less. Depends on necessity for Accuracy
 
+def integrand(x, a, b):
+    return np.sqrt(1 + (2*a*x + b)**2)
 
 def load_mac_files():
     model = YOLO("runs/detect/train10/weights/best.pt")
@@ -363,8 +373,7 @@ def insert_and_sort_droplets(droplet, lst, course):
                 lst.append(droplet)
                 return
     return
-    
-        
+       
 def where_droplets_should_start(frame) -> None:
     cv2.rectangle(frame, (445, 55), (455, 65), (255, 0, 0), 2)
     cv2.rectangle(frame, (315, 55), (325, 65), (255, 0, 0), 2)
