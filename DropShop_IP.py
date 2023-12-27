@@ -164,7 +164,6 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
     Designing a Iterative Binary Search Algorithm'''
     acceptable_distance = 20 #Some arbitrarily chosen acceptable distance 
     l, r = 0, len(drops_to_consider) - 1
-    print([drop.id for drop in drops_to_consider])
     arr = drops_to_consider
     while l <= r:
         if len(arr) == 1:
@@ -341,7 +340,7 @@ def get_droplets_on_screen(t : int, num_droplets: int, drops:{Droplet}, course) 
         droplet_6 = Droplet(6, 450, 60, .5)
         insert_and_sort_droplets(droplet_6, drops, course)
         return 6
-    elif t == 374:
+    elif t == 373:
         droplet_7 = Droplet(7, 460, 195, 1, 4)
         insert_and_sort_droplets(droplet_7, drops, course)
         return 7
@@ -364,15 +363,28 @@ def insert_and_sort_droplets(droplet, lst, course):
         if insertion_distance < i_th_droplet_travel_distance:
             lst.insert(i, droplet)
             return
-        else:
+        else: #if insertion distance is greater than i_th distance meaning droplet_i < insertion
             try:
-                lst.insert(i + 1, droplet)
-                return
-                #Try to insert at the index in front of the current one
-                #If an index error occurs because its at the end of the list then append it to the end
-            except IndexError:
+                next_droplet_travel_distance = determine_total_distance_traveled((lst[i + 1].x, lst[i + 1].y), course.segments_in_order[lst[i + 1].current_section], course)
+            except IndexError: #There isn't a droplet infront of the ith droplet meaning the ith droplet is the end of the  list
                 lst.append(droplet)
                 return
+            if insertion_distance < next_droplet_travel_distance:
+                #droplet_i < insertion < droplet_i + 1 Note python lst inserts at left of the droplet_i
+                lst.insert(i + 1, droplet)
+                return
+            else:
+                continue
+                
+            # try:
+            #     lst.insert(i + 1, droplet)
+            #     return
+            #     #Try to insert at the index in front of the current one
+            #     #If an index error occurs because its at the end of the list then append it to the end
+            # except IndexError:
+            #     lst.append(droplet)
+            #     return
+    
     return
        
 def where_droplets_should_start(frame) -> None:
@@ -452,6 +464,9 @@ def main(weights_path, video_path):
 
         if t > 0:
             droplets_on_screen = get_droplets_on_screen(t, droplets_on_screen, all_droplets, course)
+            
+            print([drop.id for drop in all_droplets])
+            
             result = model.track(frame, tracker="bytetrack.yaml", persist=True)[0]
             numbers_detected = len(result)
             found = set()
