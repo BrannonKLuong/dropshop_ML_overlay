@@ -35,8 +35,9 @@ class Path():
                     else: #If it's going up or down
                         distance_traveled += seg.bottom_right[1] - seg.top_left[1]
                 else:
-                    #This might cause problems when doing calculations since this is using a linear distance as opposed to total distance traveled
-                    distance_traveled += get_distance(seg.start, seg.end)
+                    #If it's a curve get the entire arc length, 
+                    #Pass in the Curve, the starting x, end y which is the entire duration of the curve
+                    distance_traveled += get_arc_length(seg, seg.start[0], seg.end[0])
             return distance_traveled
                             
 class Droplet():
@@ -160,13 +161,10 @@ class Curve():
     
 def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x_y_map) -> Droplet:
     '''As of right now the algorithm to find the closest droplet is Brute Force O(n^2)
-    Designing a Recursive/Iterative Algorithm'''
+    Designing a Iterative Binary Search Algorithm'''
     acceptable_distance = 20 #Some arbitrarily chosen acceptable distance 
     l, r = 0, len(drops_to_consider) - 1
-    print([drop.id for drop in drops_to_consider]) #12/26/2023 6:37pm the current issue is that when reviewing the code the frame timing for which
-    #The droplets are initialized are in a different order. The algorithm assumes droplets are sorted in distance travels. so right now at frame 
-    # 157 droplets are in order of [1, 2, 3, 4] when it should be [1, 2, 4, 3] where the number is their order inserted and the ordering the distance in 
-    # the course
+    # print([drop.id for drop in drops_to_consider])
     arr = drops_to_consider
     while l <= r:
         if len(arr) == 1:
@@ -175,9 +173,9 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
             return arr[l]   
         m = (l + r)//2
         m_d = arr[m] #m_d is middle droplet the naming is trying to not reassign the variable mid
-        print()
-        print(f"(Left, Middle, Right): {l, m, r}")
-        print(f"Left: {[drop.id for drop in arr[:m]]} Right:{[drop.id for drop in arr[m:]]}.")   
+        # print()
+        # print(f"(Left, Middle, Right): {l, m, r}")
+        # print(f"Left: {[drop.id for drop in arr[:m]]} Right:{[drop.id for drop in arr[m:]]}.")   
         calc_dist = get_distance((m_d.x, m_d.y), mid)   
         # print(f"(Left, Right): {l, r}")
         # print(f"Calculated Distant from Detection to Current Droplet {m_d.id}: {calc_dist}")  
@@ -185,23 +183,23 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
             return m_d
         else:
             #Otherwise compare it's distance from the left most droplet and right most droplet
-            
-            #This isn't adding the droplet distance itself yet
             left_distance = determine_total_distance_traveled((arr[l].x, arr[l].y), course.segments_in_order[arr[l].current_section], course)
             detection_distance = determine_total_distance_traveled(mid, x_y_map[mid], course)
             right_distance = determine_total_distance_traveled((arr[r].x, arr[r].y),course.segments_in_order[arr[r].current_section], course)
             right_difference_detection = abs(right_distance - detection_distance)
             left_difference_detection = abs(detection_distance - left_distance)
-            print(f"Detection Coordinate: {mid}")
-            print(f"Distance Detection Traveled: {detection_distance}")
-            print(f"Distance Left Droplet {arr[l].id} {arr[l].x, arr[l].y} Traveled: {left_distance}   Difference: {left_difference_detection}")
-            print(f"Distance Right Droplet {arr[r].id} {arr[r].x, arr[r].y}  Traveled: {right_distance}  Difference: {right_difference_detection}")
-            print(f"Every Droplet's Information: {[(drop.id, drop.x, drop.y) for drop in arr]}")
+            
+            # print(f"Detection Coordinate: {mid}")
+            # print(f"Distance Detection Traveled: {detection_distance}")
+            # print(f"Distance Left Droplet {arr[l].id} {arr[l].x, arr[l].y} Traveled: {left_distance}   Difference: {left_difference_detection}")
+            # print(f"Distance Right Droplet {arr[r].id} {arr[r].x, arr[r].y}  Traveled: {right_distance}  Difference: {right_difference_detection}")
+            # print(f"Every Droplet's Information: {[(drop.id, drop.x, drop.y) for drop in arr]}")
+            
             if right_difference_detection <= acceptable_distance:
-                #If right edge is acceptable close return it
+                #If right edge is within the acceptable range return it
                 return arr[r]
             if  left_difference_detection  <= acceptable_distance:
-                #if left edge is acceptably close return it
+                #if left edge is within the acceptable range return it
                 return arr[l]
             if len(arr) == 2:
                 #If length is only two then return the closer of the two
@@ -218,11 +216,13 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
                 else:
                     # Other wise ignore the right half.
                     r = m - 1
-                print(f"New (Left, Right): {l, r}")
+                # print(f"New (Left, Right): {l, r}")
         # Otherwise compare the distance between left and right
-       
         
-
+    #Can add a section that makes the algorithm worst case O(n^2) and average nlogn if the algorithm falls here that means no droplet was ever returned so we can just
+    #Have it check it N^2 wise by comparing to every droplet. The since of the greedy algorithm attempts to avoid doing this in most cases drastically improving average run time
+    #Ideally we never have to add the comparing every droplet to every detection portion. But given the nature of the inconsistencies it is possible this would be necessary
+    
 def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate can be droplet coordinate or 
     #Now let's get distance already traveled
     if not coordinate:
@@ -251,10 +251,10 @@ def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate
                 distanced_traveled += coord_y - top_most_y
     else: #If it's a curve
         start_pt = curr_seg.start
-        distanced_traveled += arc_length(curr_seg, start_pt[0], coord_x) #Get the arc length traversed across the given intervals 
-    return distanced_traveled
+        distanced_traveled += get_arc_length(curr_seg, start_pt[0], coord_x) #Get the arc length traversed across the given intervals 
+    return round(distanced_traveled, 2)
 
-def arc_length(curve, interval_1, interval_2):
+def get_arc_length(curve, interval_1, interval_2):
     #Take the coefficients from the curve of the quadratic formula
     a, b, _ = curve.quadratic_coef
     
@@ -267,11 +267,12 @@ def arc_length(curve, interval_1, interval_2):
     #Technically the formula is Arc Length Parameterization but the formula denotes deirative of both x(t) and y(t) but the nature of a quadratic formula you will factor out
     #dx from the formula resulting the the sqrt of (1 + dy/dx**2)
     #Deratives 1
-    result, _ = quad(integrand, interval_1, interval_2, args=(a, b))
-    print(f"Result of quad: {result}")
-    return round(result, 2) #Arbitrarily chosen decimal place to round to can be tested with more or less. Depends on necessity for Accuracy
+    result, _ = quad(calc_arc_length, interval_1, interval_2, args=(a, b))
+    result = abs(round(result, 2)) #Absolute value and round it
+    # print(f"Result of quad: {result}")
+    return result #Arbitrarily chosen decimal place to round to can be tested with more or less. Depends on necessity for Accuracy
 
-def integrand(x, a, b):
+def calc_arc_length(x, a, b):
     return np.sqrt(1 + (2*a*x + b)**2)
 
 def load_mac_files():
@@ -473,10 +474,7 @@ def main(weights_path, video_path):
                         continue
                     
                     closest_droplet = find_closest_droplet(all_droplets, mid, course, x_y_map)
-                    # try:
-                    #     print("Closest Droplet: " +  str(closest_droplet.id) + " Current Section: " + str(closest_droplet.current_section))
-                    # except:
-                    #     continue
+
                     found.add(closest_droplet)
 
                     closest_droplet.update_last_seen(mid, t, x_y_map, speed_threshold)
@@ -492,6 +490,7 @@ def main(weights_path, video_path):
                 if numbers_detected < droplets_on_screen:
                     print("Handling Missing Cases")
                     handle_missings(all_droplets, found, course, x_y_map)
+                        
 
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
