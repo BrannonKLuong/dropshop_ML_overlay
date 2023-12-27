@@ -164,7 +164,7 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x
     Designing a Iterative Binary Search Algorithm'''
     acceptable_distance = 20 #Some arbitrarily chosen acceptable distance 
     l, r = 0, len(drops_to_consider) - 1
-    # print([drop.id for drop in drops_to_consider])
+    print([drop.id for drop in drops_to_consider])
     arr = drops_to_consider
     while l <= r:
         if len(arr) == 1:
@@ -341,7 +341,7 @@ def get_droplets_on_screen(t : int, num_droplets: int, drops:{Droplet}, course) 
         droplet_6 = Droplet(6, 450, 60, .5)
         insert_and_sort_droplets(droplet_6, drops, course)
         return 6
-    elif t == 370:
+    elif t == 374:
         droplet_7 = Droplet(7, 460, 195, 1, 4)
         insert_and_sort_droplets(droplet_7, drops, course)
         return 7
@@ -410,10 +410,13 @@ def box_drops(drops: {Droplet}, frame) -> None:
         cv2.rectangle(frame, left_predict, right_predict, (100, 0, 0), 4)
 
 def handle_missings(drops: {Droplet}, found: set, map_course: Path, map_of_segments) -> None:
-    missing = drops.difference(found)
-    for drop in missing:
-        drop.update_position(map_course, map_of_segments)
-        found.add(drop)
+    # missing = drops.difference(found)
+    # for drop in missing:
+    #     drop.update_position(map_course, map_of_segments)
+    #     found.add(drop)
+    for drop in drops:
+        if drop not in found:
+            drop.update_position(map_course, map_of_segments)
 
 def load_mac_files():
     model = YOLO("runs/detect/train10/weights/best.pt")
@@ -490,7 +493,6 @@ def main(weights_path, video_path):
                 if numbers_detected < droplets_on_screen:
                     print("Handling Missing Cases")
                     handle_missings(all_droplets, found, course, x_y_map)
-                        
 
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
