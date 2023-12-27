@@ -6,6 +6,9 @@ import sys, os
 import math
 import time
 import math
+from sympy.plotting import plot
+from sympy import Symbol, Derivative, Integral, pprint, sqrt
+from sympy.core.rules import Transform
 
 class Path():
     def __init__(self) -> None:
@@ -249,8 +252,19 @@ def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate
                 distanced_traveled += coord_y - top_most_y
     else: #If it's a curve
         start_pt = curr_seg.start
-        # distanced_traveled += 
+        distanced_traveled += arc_length(curr_seg, start_pt[0], coord_x) #Get the arc length traversed across the given intervals 
     return distanced_traveled
+
+def arc_length(curve, interval_1, interval_2):
+    x = Symbol('x')
+    a, b, c = curve.quadratic_coef
+    a, b, c = round(a, 4), round(b, 4), round(c, 4) #This number is arbitrarily chosen. Limitations with python will further explain in Git
+    print(a, b, c)
+    f = a*x**2 + b*x + c
+    plot(f , (x , 1 , 3))
+    f_deriv = Derivative(f, x).doit()
+    pprint(f_deriv)
+    print(f"Arc Length: {Integral(sqrt(1 + (f_deriv **2)), (x, interval_1, interval_2)).doit().evalf()}")
 
 
 def load_mac_files():
