@@ -8,9 +8,11 @@ This run time is  O(nlogn + n^2) where n^2 dominates and is O(n^2). This readme 
 
 ## Sorting the Array of Droplets
 The sorting algorithm is determined by the distance in which a droplet travels. 
-This distance is calculated by where the droplet of the is in the current section and summed to the total distance to travel previous segments.
-Distace Traveled = (Droplet's positon - Segments Start Position) + the sum of every segment prior to it.
-
+This distance is calculated by where the droplet is in the current section and summed to the total distance to travel previous segments.
+Distance Traveled = (Droplet's position - Segments Start Position) + the sum of every segment before it.
+Take for example the following.
+![Example of Distance traveled](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/distance_traveled_2.png)
+Imagine That the droplet is in segment 5. We can safely assume that the sum of seg1 + seg 2 + seg 3 + seg 4 amounts to the total distance traveled. To get the remainder we take the droplet's exact position - segment 5's starting position denoted with the red dot in the corner.
 ```
     def distance_traversed(self):
         if not self.idx:
