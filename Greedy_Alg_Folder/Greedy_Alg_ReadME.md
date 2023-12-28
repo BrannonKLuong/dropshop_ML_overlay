@@ -8,7 +8,21 @@ O(nlogn + n^2) where n^2 dominates and is O(n^2). This readme will only cover th
 #### Thought Process:
 Let's imagine what we know. we know we have the segments in order in an array of this format
 the question is at any given (x, y) detection how would I know whether it comes before or after another droplet in the queue already
+
 let's imagine a Randomly Generated Array of Distinct Numbers from 1 - 7:  [3, 6, 2, 7, 5, 1, 4]
+let's imagine the droplets are actually like this in the course
+the reason i propose generating a random selection is
+similarly to how we would sort the droplets randomly given to us
+it's also sorted in the fact we know where it's going and where the droplets are going to be inserted at
+since they're no definitive singular section as in x, y
+we don't know hwo to sort the droplets exactly
+what we do know is
+the order of the segments knowing
+that the segments in light blue are ordered
+so we have a way of sorting it
+so let's take this random list again
+[3, 6, 2, 7, 5, 1, 4]
+we can now partition it in this way knowing that the order would roughly be in the form [1], [3, 2], [4], [6, 7, 5] 
 
 ```
     def distance_traversed(self):
