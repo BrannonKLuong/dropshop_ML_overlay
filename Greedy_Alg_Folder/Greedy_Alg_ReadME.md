@@ -7,6 +7,9 @@ Worst case scenario the algorithm doesn't find a droplet within an acceptable th
 This run time is  O(nlogn + n^2) where n^2 dominates and is O(n^2). This readme will only cover the primary implementation logic and highlight the differences from the initial design.
 
 ## Sorting the Array of Droplets
+The sorting algorithm is determined by the distance in which a droplet travels. 
+This distance is calculated by where the droplet of the is in the current section and summed to the total distance to travel previous segments.
+Distace Traveled = (Droplet's positon - Segments Start Position) + the sum of every segment prior to it.
 ```
     def distance_traversed(self):
         if not self.idx:
