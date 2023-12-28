@@ -36,3 +36,40 @@ The following function in Path class when initialized maps each segment to the s
                     distance_traveled += get_arc_length(seg, seg.start[0], seg.end[0])
             return distance_traveled
 ```
+
+#### Droplet's Update Last Seen Function has been resolved from previous version
+
+```
+    def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
+        self.x = mid[0]
+        self.y = mid[1]
+        if not self.last_detection:
+            self.last_detection = (mid, t)
+            return
+        else:
+            if isinstance(x_y_map[mid], Straight):
+                direction_x, direction_y = x_y_map[mid].direction
+                if direction_x and not direction_y:
+                    last_x, curr_x, last_t = self.last_detection[0][0], mid[0], self.last_detection[1]
+                    if t != last_t: #This line prevents Zero Division Error
+                        new_trajectory =  max((last_x - curr_x), (curr_x - last_x))//max((last_t - t), (t - last_t))
+                        if new_trajectory and new_trajectory <= speed_threshold:
+                            self.trajectory = new_trajectory
+                else:
+                    last_y, curr_y, last_t = self.last_detection[0][1], mid[1], self.last_detection[1]
+                    if t != last_t: #This line prevents Zero Division Error
+                        new_trajectory =  max((last_y - curr_y), (curr_y - last_y))//max((last_t - t), (t - last_t))
+                        if new_trajectory and new_trajectory <= speed_threshold:
+                            self.trajectory = new_trajectory
+            else:
+                current_curve = x_y_map[mid]
+                middle_curve_x = current_curve.mid[0]
+                start_x, end_x = current_curve.start[0], current_curve.end[0]
+                total_length = abs((start_x - end_x))
+                proximity_to_center = abs(middle_curve_x - self.x)
+                if proximity_to_center/total_length * self.curve_speed >= 0.3: 
+                    self.curve_speed *= proximity_to_center/total_length 
+            self.last_detection = (mid, t)
+```
+
+## The Bulk of the Changes in the Find Closest Droplet Logic
