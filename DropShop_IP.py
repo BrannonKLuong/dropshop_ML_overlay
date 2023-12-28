@@ -336,7 +336,7 @@ def get_droplets_on_screen(t : int, num_droplets: int, drops:{Droplet}, course) 
         droplet_7 = Droplet(7, 460, 195, 1, 4)
         insert_and_sort_droplets(droplet_7, drops, course)
         return 7
-    elif t == 515:
+    elif t == 516:
         droplet_8 = Droplet(8, 315, 195, 1, 4)
         insert_and_sort_droplets(droplet_8, drops, course)
         return 8 
