@@ -10,6 +10,7 @@ This run time is  O(nlogn + n^2) where n^2 dominates and is O(n^2). This readme 
 The sorting algorithm is determined by the distance in which a droplet travels. 
 This distance is calculated by where the droplet of the is in the current section and summed to the total distance to travel previous segments.
 Distace Traveled = (Droplet's positon - Segments Start Position) + the sum of every segment prior to it.
+
 ```
     def distance_traversed(self):
         if not self.idx:
