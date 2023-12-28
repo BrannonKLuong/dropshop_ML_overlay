@@ -124,6 +124,7 @@ def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
 Recall that this algorithm is a Greedy Algorithm primarily because there is too much variability and never guarantees perfection in the way of binary search. For example, there are times when the desired droplet is in the right half but the leftmost droplet is closest and will disregard it. To compensate for this factor in the case that the algorithm never finds an acceptable droplet within the desired threshold the algorithm will brute-force search for it. However, these cases are far less frequent and the average run time is O(nlogn).
 
 #### The Math to Determine Total Distance
+The only key difference in calculating the sum is for curves the algorithm uses the arc length formula.
 
 ```
 def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate can be droplet coordinate or 
@@ -179,4 +180,33 @@ def calc_arc_length(x, a, b):
     return np.sqrt(1 + (2*a*x + b)**2)
 ```
 
+#### Insertion Logic
+The Implemented Insertion Logic handles the cases listed in the main read me.
+```
+def insert_and_sort_droplets(droplet, lst, course):
+    if not lst:
+        lst.append(droplet)
+        return
+    
+    for i in range(len(lst)):
+        # coordinate, curr_seg, course
+        insertion_distance = determine_total_distance_traveled((droplet.x, droplet.y), course.segments_in_order[droplet.current_section], course)
+        i_th_droplet_travel_distance = determine_total_distance_traveled((lst[i].x, lst[i].y), course.segments_in_order[lst[i].current_section], course)
+        if insertion_distance < i_th_droplet_travel_distance:
+            lst.insert(i, droplet)
+            return
+        else: #if insertion distance is greater than i_th distance meaning droplet_i < insertion
+            try:
+                next_droplet_travel_distance = determine_total_distance_traveled((lst[i + 1].x, lst[i + 1].y), course.segments_in_order[lst[i + 1].current_section], course)
+            except IndexError: #There isn't a droplet infront of the ith droplet meaning the ith droplet is the end of the  list
+                lst.append(droplet)
+                return
+            if insertion_distance < next_droplet_travel_distance:
+                #droplet_i < insertion < droplet_i + 1 Note python lst inserts at left of the droplet_i
+                lst.insert(i + 1, droplet)
+                return
+            else:
+                continue
+    return
+```
 
