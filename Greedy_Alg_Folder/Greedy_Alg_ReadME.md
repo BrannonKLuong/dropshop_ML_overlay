@@ -11,8 +11,12 @@ The sorting algorithm is determined by the distance in which a droplet travels.
 This distance is calculated by where the droplet is in the current section and summed to the total distance to travel previous segments.
 Distance Traveled = (Droplet's position - Segments Start Position) + the sum of every segment before it.
 Take for example the following.
+
 ![Example of Distance traveled](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/distance_traveled_2.png)
+
 Imagine That the droplet is in segment 5. We can safely assume that the sum of seg1 + seg 2 + seg 3 + seg 4 amounts to the total distance traveled. To get the remainder we take the droplet's exact position - segment 5's starting position denoted with the red dot in the corner.
+The following function in Path class when initialized maps each segment to the sum of previous segments so segment 1 is mapped to the sum of segment 0. Segment 2 is mapped to the distance of (segment 1 distance + segment 0 distance). 
+
 ```
     def distance_traversed(self):
         if not self.idx:
