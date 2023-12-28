@@ -159,68 +159,60 @@ class Curve():
         a, b, c = self.quadratic_coef
         return a * (x ** 2) + b * x + c
     
-def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int), course, x_y_map) -> Droplet:
+def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
     '''As of right now the algorithm to find the closest droplet is Brute Force O(n^2)
     Designing a Iterative Binary Search Algorithm'''
-    acceptable_distance = 20 #Some arbitrarily chosen acceptable distance 
-    l, r = 0, len(drops_to_consider) - 1
-    arr = drops_to_consider
+    acceptable_distance = 10 #Some arbitrarily chosen acceptable distance 
+    l, r = 0, len(arr) - 1
+
     while l <= r:
         if len(arr) == 1:
             return arr[0]
         if l == r: #If pointers pointing to the same droplet return it since the rest of the array has been ignored
-            return arr[l]   
+            return brute_force(arr, mid)
+
         m = (l + r)//2
         m_d = arr[m] #m_d is middle droplet the naming is trying to not reassign the variable mid
-        # print()
-        # print(f"(Left, Middle, Right): {l, m, r}")
-        # print(f"Left: {[drop.id for drop in arr[:m]]} Right:{[drop.id for drop in arr[m:]]}.")   
-        calc_dist = get_distance((m_d.x, m_d.y), mid)   
-        # print(f"(Left, Right): {l, r}")
-        # print(f"Calculated Distant from Detection to Current Droplet {m_d.id}: {calc_dist}")  
+
+        calc_dist = get_distance((m_d.x, m_d.y), mid)
+        print()
+        print(f"(Left, Middle, Right): {l, m, r} Left: {[drop.id for drop in arr[l:m]]} Right:{[drop.id for drop in arr[m:r + 1]]}.")    
+        print(f"Detection Coordinate: {mid}")
+        print(f"Every Droplet's Information: {[(drop.id, drop.x, drop.y) for drop in arr]}")
+        
+        left_distance = determine_total_distance_traveled((arr[l].x, arr[l].y), course.segments_in_order[arr[l].current_section], course)
+        detection_distance = determine_total_distance_traveled(mid, x_y_map[mid], course)
+        right_distance = determine_total_distance_traveled((arr[r].x, arr[r].y),course.segments_in_order[arr[r].current_section], course)
+        
+        right_difference_detection = abs(right_distance - detection_distance)
+        left_difference_detection = abs(detection_distance - left_distance)
         if calc_dist <= acceptable_distance: #If the detection is within a reasonable detection to a droplet assume that's the closest and return it
             return m_d
+        if right_difference_detection <= acceptable_distance:
+            #If right edge is within the acceptable range return it
+            return arr[r]
+        if  left_difference_detection <= acceptable_distance:
+            #if left edge is within the acceptable range return it
+            return arr[l]
+        elif right_difference_detection < left_difference_detection:
+            l = m + 1
         else:
-            #Otherwise compare it's distance from the left most droplet and right most droplet
-            left_distance = determine_total_distance_traveled((arr[l].x, arr[l].y), course.segments_in_order[arr[l].current_section], course)
-            detection_distance = determine_total_distance_traveled(mid, x_y_map[mid], course)
-            right_distance = determine_total_distance_traveled((arr[r].x, arr[r].y),course.segments_in_order[arr[r].current_section], course)
-            right_difference_detection = abs(right_distance - detection_distance)
-            left_difference_detection = abs(detection_distance - left_distance)
-            
-            # print(f"Detection Coordinate: {mid}")
-            # print(f"Distance Detection Traveled: {detection_distance}")
-            # print(f"Distance Left Droplet {arr[l].id} {arr[l].x, arr[l].y} Traveled: {left_distance}   Difference: {left_difference_detection}")
-            # print(f"Distance Right Droplet {arr[r].id} {arr[r].x, arr[r].y}  Traveled: {right_distance}  Difference: {right_difference_detection}")
-            # print(f"Every Droplet's Information: {[(drop.id, drop.x, drop.y) for drop in arr]}")
-            
-            if right_difference_detection <= acceptable_distance:
-                #If right edge is within the acceptable range return it
-                return arr[r]
-            if  left_difference_detection  <= acceptable_distance:
-                #if left edge is within the acceptable range return it
-                return arr[l]
-            if len(arr) == 2:
-                #If length is only two then return the closer of the two
-                if right_difference_detection < left_difference_detection:
-                    return arr[r]
-                else:
-                    return arr[l]
-            else:
-                #Otherwise Binary Search
-                if right_difference_detection < left_difference_detection: 
-                    #If the detection is closer to the right most 
-                    #Ignore the left half
-                    l = m + 1
-                else:
-                    # Other wise ignore the right half.
-                    r = m - 1
-                # print(f"New (Left, Right): {l, r}")
-        # Otherwise compare the distance between left and right
-        
+            r = m - 1
     #Can add a section that makes the algorithm worst case O(n^2) and average nlogn if the algorithm falls here that means no droplet was ever returned so we can just
     #Have it check it N^2 wise by comparing to every droplet. The since of the greedy algorithm attempts to avoid doing this in most cases drastically improving average run time
     #Ideally we never have to add the comparing every droplet to every detection portion. But given the nature of the inconsistencies it is possible this would be necessary
+
+def brute_force(drops_to_consider: {Droplet}, mid:(int, int)):
+    closest = float('inf')
+    closest_drop = None
+    for drop in drops_to_consider:
+        drop_point = (drop.x, drop.y)
+        distance = get_distance(drop_point, mid) 
+        if distance < closest:
+            closest_drop = drop
+            closest = distance
+    print("Brute Forced")
+    return closest_drop  
     
 def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate can be droplet coordinate or 
     #Now let's get distance already traveled
@@ -375,16 +367,6 @@ def insert_and_sort_droplets(droplet, lst, course):
                 return
             else:
                 continue
-                
-            # try:
-            #     lst.insert(i + 1, droplet)
-            #     return
-            #     #Try to insert at the index in front of the current one
-            #     #If an index error occurs because its at the end of the list then append it to the end
-            # except IndexError:
-            #     lst.append(droplet)
-            #     return
-    
     return
        
 def where_droplets_should_start(frame) -> None:
