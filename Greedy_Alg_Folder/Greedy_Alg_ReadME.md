@@ -123,4 +123,60 @@ def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
 #### Highlighting A Crucial Point
 Recall that this algorithm is a Greedy Algorithm primarily because there is too much variability and never guarantees perfection in the way of binary search. For example, there are times when the desired droplet is in the right half but the leftmost droplet is closest and will disregard it. To compensate for this factor in the case that the algorithm never finds an acceptable droplet within the desired threshold the algorithm will brute-force search for it. However, these cases are far less frequent and the average run time is O(nlogn).
 
+#### The Math to Determine Total Distance
+
+```
+def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate can be droplet coordinate or 
+    #Now let's get distance already traveled
+    if not coordinate:
+        return 0
+    coord_x, coord_y = coordinate[0], coordinate[1]
+    distanced_traveled = course.segments_index_map[curr_seg][1] #if n - 1 segments have already been traversed add the flat sum of n segments to the distanced traveled
+    #Now calculate the distanced traveled in the current nth segment
+    #Remember the grid is inverted 0, 0 is the top left so we can use math.abs to get the absolute value of the distanced traveled since the start will be on the right, traveling left the det x should be < than the right most x
+    if isinstance(curr_seg, Straight): #if it's a straight
+        horiz, vert = curr_seg.direction #Break the tuple into the horizontal, vertical direction
+        if horiz and not vert: #If traveling horizontally and left <------------------------------- IMPORTANT: The Direction Tuple is in format of (1, 0) (0, 1) (-1, 0) (0, -1) denoting right, down, left, up
+            if horiz == -1:
+                #Add the distance from the detection's x to the right most x of the segment
+                right_most_x = curr_seg.bottom_right[0]
+                distanced_traveled += right_most_x - coord_x
+            else: # if traveling right
+                #Add the distance from detection's x to the left msot x of the segment since traveling right det_x > left_most_x
+                left_most_x = curr_seg.top_left[0]
+                distanced_traveled += coord_x - left_most_x 
+        else: # Traveling vertically
+            if vert == -1: #If traveling up: Subtract the detection from the bottom most y. Since Detection y < bottom most y
+                bottom_most_y = curr_seg.bottom_right[1] 
+                distanced_traveled += bottom_most_y - coord_y
+            else: #if traveling down, top most y < det y
+                top_most_y = curr_seg.top_left[1]
+                distanced_traveled += coord_y - top_most_y
+    else: #If it's a curve
+        start_pt = curr_seg.start
+        distanced_traveled += get_arc_length(curr_seg, start_pt[0], coord_x) #Get the arc length traversed across the given intervals 
+    return round(distanced_traveled, 2)
+
+def get_arc_length(curve, interval_1, interval_2):
+    #Take the coefficients from the curve of the quadratic formula
+    a, b, _ = curve.quadratic_coef
+    
+    #a and b have to be rounded or else the issue that the python can not represent very large numbers accurately after a said bit point
+    #rounding 8 runs well for me so I'll leave it at that and test it.
+    a, b = round(a, 8), round(b, 8)#This number is arbitrarily chosen. Limitations with python will further explain in Git
+    
+    #The following applies python's numpy to apply arc length integrals to calculate the distance along a quadratic curve
+    #Quad Integrand is a python library and a designed function to execute the formula of an "Arc Length Parameterization" or "Arc Length of a Quadratic Curve"
+    #Technically the formula is Arc Length Parameterization but the formula denotes deirative of both x(t) and y(t) but the nature of a quadratic formula you will factor out
+    #dx from the formula resulting the the sqrt of (1 + dy/dx**2)
+    #Deratives 1
+    result, _ = quad(calc_arc_length, interval_1, interval_2, args=(a, b))
+    result = abs(round(result, 2)) #Absolute value and round it
+    # print(f"Result of quad: {result}")
+    return result #Arbitrarily chosen decimal place to round to can be tested with more or less. Depends on necessity for Accuracy
+
+def calc_arc_length(x, a, b):
+    return np.sqrt(1 + (2*a*x + b)**2)
+```
+
 
