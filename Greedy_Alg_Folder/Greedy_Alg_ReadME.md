@@ -73,3 +73,54 @@ The following function in the Path class when initialized maps each segment to t
 ```
 
 ## The Bulk of the Changes in the Find Closest Droplet Logic
+The core of the logic is replaced with a binary search applied to a sorted array of droplets which is sorted by the sum of the distance traveled.
+Find Closest Droplet now has a hard-coded parameter  called acceptable_distance which is an arbitrarily chosen value that determines whether or not a droplet is close enough to detection to be sufficiently returned/determined as the closest droplet. Inherently the algorithm follows the fundamentals of binary search and uses the distance values for comparisons.
+```
+def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
+    '''As of right now the algorithm to find the closest droplet is Brute Force O(n^2)
+    Designing a Iterative Binary Search Algorithm'''
+    acceptable_distance = 10 #Some arbitrarily chosen acceptable distance 
+    l, r = 0, len(arr) - 1
+
+    while l <= r:
+        if len(arr) == 1:
+            return arr[0]
+        if l == r: #If pointers pointing to the same droplet return it since the rest of the array has been ignored and the array was traversed through binary search meaning\
+            return brute_force(arr, mid)
+
+        m = (l + r)//2
+        m_d = arr[m] #m_d is middle droplet the naming is trying to not reassign the variable mid
+
+        calc_dist = get_distance((m_d.x, m_d.y), mid)
+        # print()
+        # print(f"(Left, Middle, Right): {l, m, r} Left: {[drop.id for drop in arr[l:m]]} Right:{[drop.id for drop in arr[m:r + 1]]}.")    
+        # print(f"Detection Coordinate: {mid}")
+        # print(f"Every Droplet's Information: {[(drop.id, drop.x, drop.y) for drop in arr]}")
+        
+        left_distance = determine_total_distance_traveled((arr[l].x, arr[l].y), course.segments_in_order[arr[l].current_section], course)
+        detection_distance = determine_total_distance_traveled(mid, x_y_map[mid], course)
+        right_distance = determine_total_distance_traveled((arr[r].x, arr[r].y),course.segments_in_order[arr[r].current_section], course)
+        
+        right_difference_detection = abs(right_distance - detection_distance)
+        left_difference_detection = abs(detection_distance - left_distance)
+        if calc_dist <= acceptable_distance: #If the detection is within a reasonable detection to a droplet assume that's the closest and return it
+            return m_d
+        if right_difference_detection <= acceptable_distance:
+            #If right edge is within the acceptable range return it
+            return arr[r]
+        if  left_difference_detection <= acceptable_distance:
+            #if left edge is within the acceptable range return it
+            return arr[l]
+        elif right_difference_detection < left_difference_detection:
+            l = m + 1
+        else:
+            r = m - 1
+    #Can add a section that makes the algorithm worst case O(n^2) and average nlogn if the algorithm falls here that means no droplet was ever returned so we can just
+    #Have it check it N^2 wise by comparing to every droplet. The since of the greedy algorithm attempts to avoid doing this in most cases drastically improving average run time
+    #Ideally we never have to add the comparing every droplet to every detection portion. But given the nature of the inconsistencies it is possible this would be necessary
+```
+
+#### Highlighting A Crucial Point
+Recall that this algorithm is a Greedy Algorithm primarily because there is too much variability and never guarantees perfection in the way of binary search. For example, there are times when the desired droplet is in the right half but the leftmost droplet is closest and will disregard it. To compensate for this factor in the case that the algorithm never finds an acceptable droplet within the desired threshold the algorithm will brute-force search for it. However, these cases are far less frequent and the average run time is O(nlogn).
+
+
