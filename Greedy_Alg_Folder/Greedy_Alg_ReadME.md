@@ -211,6 +211,7 @@ def insert_and_sort_droplets(droplet, lst, course):
 ```
 
 # Final Notes:
-With the rainbow video the algorithm runs a total of 5750 searches, and of those 124 are brute forced while the rest are successfully binary searched. For this video brute force is required 2% of the time.
+## With the rainbow video the algorithm runs a total of 5750 searches and of those 124 are brute forced while the rest are successfully binary searched. For this video brute force is used 2% of the time.
+
 In the terms of O(n^2) vs O(nlogn). n is the number of droplets. It can be more accurate in the description saying the worst case scenario is O(n * d) where n is the number of droplets and d is the number of detections. Recall ideally the machine learning model accurately detects each droplet. So ideally d == n.
 Therefore the core of the old implementation was to check every detection with every droplet O(n * d) since d == n, n * n, or O(n^2). In the Greedy Algorithm the implementation constantly disregards half of the array so the search is now O(d * log2(n) and since d == n, O(n*log2n) or just O(nlogn)
