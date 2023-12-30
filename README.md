@@ -1,17 +1,20 @@
 # The Design and Implementation of DropShop
 ## Summary:
-A brief high-level explanation of how the current implementation works is that every 
-detection provided by the Machine Learning Model YoloV8 will check to find its closest droplet. 
+A brief high-level explanation of how this version works is that every 
+detection provided by the Machine Learning Model, YoloV8,
+will try to find the closest droplet to itself from a set of droplets.
 Every frame in the video is analyzed with the machine learning (ML) model which produces
-an array of detections with corresponding information 
-x1, y1, x2, y2, id (this may or not be present depending on how the data was labeled), confidence percentage, class defined in the model (also dependent on how data was labeled)
-This is denoted in the algorithm as one of the following:
+an array of detections with the following information:
+#### x1, y1, x2, y2, id (this may or not be present depending on how the data was labeled), confidence percentage, class defined in the model (also dependent on how data was labeled)
+
+This is denoted in the algorithm in the following variables:
 ```
    xone, yone, xtwo, ytwo, id, confidence, class_in_model = data
    xone, yone, xtwo, ytwo, confidence, class_in_model = data
 ```
-Each detection is mapped to the Droplets that were initialized based on the facts that with the assumptions of when and where they begin. 
-Each detection is then mapped to each droplet and subsequently updated in the positions of that Droplet.
+
+Each detection searches for a droplet in a set of Droplets that were initialized based on when and where they begin. 
+Each detection then finds the closest droplet and subsequently updates the positions of that Droplet with the detection's information.
 Green boxes are straight segments, Blue boxes are Curve segments, and red dots are points along the curve to calculate the quadratic coefficients a, b, and c.
 Black boxes are dispensers, purple boxes are the ML model's detections (the left number is ID, the right number is confidence),
 Cyan/Aqua boxes inside the purple boxes are Python-initialized droplets to store data. 
