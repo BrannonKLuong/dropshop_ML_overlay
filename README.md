@@ -29,7 +29,7 @@ The following portion will elaborate on the design process.
 
 #### Previous Algorithms would lose track of the droplets in the course. When those droplets are reacquired (detected after being missed) by the computer vision the lost droplet would be labeled a new droplet. Droplets being lost by computer vision or former models are described as disappearances. Additionally, previous implementations used limited forms of Labeling such as Model provided labeling or incrementing counter labeling. 
 
-For example: if droplet 0 was lost in frame 2 denoted as d0. The counter would increment and label it new as d1. Consider the following sequence  
+For example: if droplet 0 was lost in frame 2 denoted as d0. The counter would increment and label it new as d1. Consider the following sequence: 
 Frame 1: d0  
 Frame 2:   
 Frame 3: d1  
