@@ -37,7 +37,8 @@ The following function in the Path class when initialized maps each segment to t
             return distance_traveled
 ```
 
-#### Droplet's Update Last Seen Function has been resolved from the previous version
+Updated Vertical Aspect of update_last_seen() still requires an efficient way of implementing
+increasing the speed of the droplet as it leaves curves.
 
 ```
     def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
@@ -72,45 +73,72 @@ The following function in the Path class when initialized maps each segment to t
             self.last_detection = (mid, t)
 ```
 
-## The Bulk of the Changes in the Find Closest Droplet Logic
+## The Bulk of the Changes in the Find Closest Droplet Function Logic
 The core of the logic is replaced with a binary search applied to a sorted array of droplets which is sorted by the sum of the distance traveled.
-Find Closest Droplet now has a hard-coded parameter  called acceptable_distance which is an arbitrarily chosen value that determines whether or not a droplet is close enough to detection to be sufficiently returned/determined as the closest droplet. Inherently the algorithm follows the fundamentals of binary search and uses the distance values for comparisons.
+Find Closest Droplet now has a hard-coded parameter called acceptable_distance which is an arbitrarily chosen value that determines whether or not a droplet is close enough to detection to be sufficiently returned/determined as the closest droplet. Inherently the algorithm follows the fundamentals of binary search and uses the distance values for comparisons.
 ```
 def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
     '''Iterative Binary Search Algorithm for DropShop using Distance as a Metric'''
-    acceptable_distance = 10 #Some arbitrarily chosen acceptable distance 
-    l, r = 0, len(arr) - 1
 
+    acceptable_distance = 10 #Some arbitrarily chosen acceptable distance
+
+    l, r = 0, len(arr) - 1
     while l <= r:
         if len(arr) == 1:
             return arr[0]
+```
+If the entirety of the binary search is completed then eventually l will equal r. This means the entire array was traversed through a binary search and no droplet was detected
+within the acceptable bounds. This means the algorithm didn't find the target and Brute Force searches through the original method of finding a droplet to find the closest droplet. 
+            
+```
         if l == r:
-            #The entire array was traversed through binary search and no droplet was detected
-            #within the acceptable bounds, thus we missed the target so we brute force the attempt
             return brute_force(arr, mid)
+```
+m is the middle index and m_d is the middle droplet object. The naming of m_d is similar to mid which is important to note so that there's no accidental reassignment. Calc_dist is the distance between the detection and droplet 
 
+```
         m = (l + r)//2
-        m_d = arr[m] #m_d is middle droplet the naming is trying to not reassign the variable mid
+        m_d = arr[m] #m_d is the middle droplet, being careful not to reassign mid
 
         calc_dist = get_distance((m_d.x, m_d.y), mid)
+```
+
+Print Statements can be uncommented to visualize how the algorithm is running.
+
+```
         # print()
         # print(f"(Left, Middle, Right): {l, m, r} Left: {[drop.id for drop in arr[l:m]]} Right:{[drop.id for drop in arr[m:r + 1]]}.")    
         # print(f"Detection Coordinate: {mid}")
         # print(f"Every Droplet's Information: {[(drop.id, drop.x, drop.y) for drop in arr]}")
-        
-        left_distance = determine_total_distance_traveled((arr[l].x, arr[l].y), course.segments_in_order[arr[l].current_section], course)
-        detection_distance = determine_total_distance_traveled(mid, x_y_map[mid], course)
+```
+Left_distance is the distance of the left-most droplet. Detection_distance is how far along the detection is along the course. Right_distance is the distance of the right-most droplet.
+
+```
+        left_distance = determine_total_distance_traveled((arr[l].x, arr[l].y), course.segments_in_order[arr[l].current_section], course) 
+        detection_distance = determine_total_distance_traveled(mid, x_y_map[mid], course) # Distance of the detection
         right_distance = determine_total_distance_traveled((arr[r].x, arr[r].y),course.segments_in_order[arr[r].current_section], course)
-        
+```
+Right_difference_detection is the distance of the rightmost droplet - the distance of the detection.
+Left Distance is the difference between the detection and leftmost droplet. 
+
+```
         right_difference_detection = abs(right_distance - detection_distance)
         left_difference_detection = abs(detection_distance - left_distance)
-        if calc_dist <= acceptable_distance: #If the detection is within a reasonable detection to a droplet assume that's the closest and return it
+```
+
+If the detection is within a reasonable detection to a droplet assume that's the closest and return it. This feature was added to replace the arr[m] == target: return function of a normal binary search. Since the algorithm needs something to classify as the target or known as the target a distance threshold should suffice. Imagine a radius around a droplet saying any detection within this radius is sufficiently close therefore that detection is associated with that droplet.
+
+```
+        if calc_dist <= acceptable_distance:
             return m_d
+```
+
+If the rightmost droplet or leftmost droplet is within the acceptable range return that droplet. Otherwise binary search.
+
+```
         if right_difference_detection <= acceptable_distance:
-            #If right edge is within the acceptable range return it
             return arr[r]
         if  left_difference_detection <= acceptable_distance:
-            #if left edge is within the acceptable range return it
             return arr[l]
         elif right_difference_detection < left_difference_detection:
             l = m + 1
