@@ -1,4 +1,4 @@
-# Design and Implementation of DropShop Algorithm
+# The Design and Implementation of DropShop
 ## Summary:
 A brief high-level explanation of how the current implementation works is that every 
 detection provided by the Machine Learning Model YoloV8 will check to find its closest droplet. 
@@ -33,8 +33,8 @@ Frame 3: d1
 
 #### The solution leverages the simplicity of knowing that the course is consistent. Meaning that the droplets travel across a fixed path. The implementation must also keep in mind that Machine Learning Models do not explicitly have a form of carrying information over to determine and help detect in consecutive frames. Tracking algorithms such as Kalman's algorithm estimate where an object will be based on its trajectory from previous frames and its current position in current frames. Kalman's filter is ideal for more complex environments. Maintaining this logic the design of this implementation of Dropshop uses Droplet objects to retain as much information to infer the position. Due to the simplicity of the Course lay the following was used to infer the future position of droplets. Initialize a bounding box that shows the direction of the segment of the course and whether the segment is a curve or a straight. A straight, simple in its implementations, modifies the x or y value of a droplet by the direction it's heading. A curve needs to be labeled accurately to utilize the Quadratic equation to predict its traversal along the course's curve. From this point let d<sub>n</sub> de droplets, course to be the entire path, segments be any part of the course, Det<sub>n</sub> to de detections.
 
-## Step 0: Loading Roboflow and Acquiring Weights and Data
-### Requirements
+## Step 0: Installing Requirements
+
 ### Python 3.11 >= Python 3.x
 Ultralytics is not yet compatible with Python 3.12
 
