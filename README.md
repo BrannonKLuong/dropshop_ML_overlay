@@ -122,7 +122,7 @@ The main function takes two arguments the weights and the video. The weights wer
                    ret_dic[(i, j)] = course
        return ret_dic
     ```
-4. The remaining variables: box = sv.BoxAnnotator() is an ultralytics provided class to draw boxes. Speed Threshold is some arbitrarily chosen threshold for the speed of droplets. model is an initialized Yolo Model with the weights from the weighted path in Step 0 as its parameter. video cap is a cv2 loaded VideoCapture function using weight path as its parameter. t is a counter that helps show what frame the video is on. Droplets on screen are a global variable so that the algorithm knows how many droplets have been initialized this too is hard coded.
+4. The remaining variables: box = sv.BoxAnnotator() is an ultralytics provided class to draw boxes. Speed Threshold is some arbitrarily chosen threshold for the speed of droplets. model is an initialized Yolo Model with the weights from the weighted path in Step 0 as its parameter. video cap is a cv2 loaded VideoCapture function using weight path as its parameter. t is a counter that helps show what frame the video is on. Droplets on screen are a global variable so that the algorithm knows how many droplets have been initialized (Knowing how many droplets are initialized is an assumption, therefore, it is hard coded).
 
    ```
    all_droplets = set()
