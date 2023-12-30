@@ -14,15 +14,16 @@ This is denoted in the algorithm in the following variables:
 ```
 
 Each detection searches for a droplet in a set of Droplets that were initialized based on when and where they begin. 
-Each detection then finds the closest droplet and subsequently updates the positions of that Droplet with the detection's information.
+Each detection then finds the closest droplet and subsequently updates the positions of that droplet with the detection's information.
 Green boxes are straight segments, Blue boxes are Curve segments, and red dots are points along the curve to calculate the quadratic coefficients a, b, and c.
-Black boxes are dispensers, purple boxes are the ML model's detections (the left number is ID, the right number is confidence),
+Black boxes are dispensers. Purple boxes are the ML model's detections (the left number is ID, the right number is confidence),
 Cyan/Aqua boxes inside the purple boxes are Python-initialized droplets to store data. 
-If a detection is missed then the algorithm will attempt to predict where it'll be using the fact the Droplet is in a straight or curve traveling in 1 direction
-#### Note get_droplet_on_screen() is hard-coded to initialize droplets at time T and location (x, y) referring to a dispenser. So this hard code varies by video
+If a droplet isn't detected it is considered "missing". The algorithm will attempt to predict where missing droplets will be using the fact the Droplet is in a straight or curve traveling in 1 direction then update the missing droplets accordingly.
+
+#### Note get_droplet_on_screen() is hard-coded to initialize droplets at time T and location (x, y) of a dispenser. So this hard code varies by video
 
 # The Design
-## This following portion will elaborate on the design process.
+The following portion will elaborate on the design process.
 
 # The Problem: 
 #### Previous Algorithms would lose track of the droplets in the chip. When those droplets are reacquired by computer vision the lost droplet would be labeled a new droplet. Droplets being lost by computer vision or former models are described as disappearances. Additionally, previous implementations used limited forms of Labeling such as Model provided labeling or incrementing counter labeling. 
