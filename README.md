@@ -65,7 +65,11 @@ def load_data():
     model = YOLO('yolov8m.pt')                                   #This loads the Training Model
     model.train(data='DropShop-1\\data.yaml', epochs=5)  #This trains the model and saves into the directory
 ```
-
+# Preface
+Any code encompassed in the following way should be disregarded. It is left in to try to explain a different approach of a failed attempt to implement localized data structures a solution  
+#--------------#  
+code  
+#--------------#  
 
 ## Step 1: Main and Variable Initialization
 
@@ -206,7 +210,7 @@ def find_closest_droplet(drops_to_consider: {Droplet}, mid:(int, int)) -> Drople
             closest = distance
     return closest_drop  
 ```
-5. Once acquiring the closest droplet to a detection it'll be added to a data structure of found. Each droplet will then update its information with the new (x, y) position as well as try to calculate its average trajectory since it's last been seen. If the detection occurred in a different segment than the droplet it just acquired, it has moved to a new segment. The algorithm will then compare the (x and y) coordinates to compare and update the section accordingly. The initial implementation used a primitive way to carry over data. The idea was to reduce overall average run time using localized data structures for particular segments. This would allow the algorithm to compare detections to only droplets in the segment it was discovered reducing the overall run time on average from O(n<sub>2</sub>) to some O(n detections * m droplets in that smaller segment). However, this implementation was error-prone and not the ideal way to both carryover data and compare detections to droplets.
+5. Once acquiring the closest droplet to a detection it'll be added to a set called found. Each droplet will then update its information with the new (x, y) position as well as try to calculate its average trajectory since it's last been seen. If the detection occurred in a different segment than the droplet it just acquired, it assumed the droplet moved to a new segment. The algorithm will then compare the (x and y) coordinates to compare and update the section accordingly. The initial implementation used a primitive way to carry over data. The idea was to reduce overall average run time using localized data structures for particular segments. This would allow the algorithm to compare detections to only droplets in the segment it was discovered reducing the overall run time on average from O(n<sub>2</sub>) to some O(n detections * m droplets in that smaller segment). However, this implementation was error-prone and not the ideal way to both carryover data and compare detections to droplets.
 
 An example of how the first implementation was supposed to work: 
 As you can imagine each segment would ideally have a localized data structure that kept track of the droplets in itself.
@@ -277,7 +281,7 @@ class Droplet():
         self.last_detection = None
         self.curve_speed = trajectory
 ```
-2. Update position is logic logic for inferring the position of a given droplet when it is not detected by the Machine Learning Model. The Straights are simple to update the x or y depending on if the Droplet is inside of a straight going up or down. If a droplet is in a curve and not detected then it requires it to run an inference using the quadratic formula provided the start, middle, and end points inside of a Curve. The function then finally calls update_section which checks if the droplet itself moved into a new section and updates the data accordingly. Note the dashed section "-----" will have to be replaced to be used in parallel with the user interface and <b>IF</b> there is a notable tilt to the camera angle of the video that might have the droplet move out of a drawn bounding box.
+2. Update position is the logic for inferring the position of a given droplet when it is not detected by the Machine Learning Model. The Straights are simple to update the x or y depending on if the Droplet is inside of a straight going up or down. If a droplet is in a curve and not detected then it requires it to run an inference using the quadratic formula provided the start, middle, and end points inside of a Curve. The function then finally calls update_section which checks if the droplet itself moved into a new section and updates the data accordingly. Note the dashed section "-----" will have to be replaced to be used in parallel with the user interface and <b>IF</b> there is a notable tilt to the camera angle of the video that might have the droplet move out of a drawn bounding box.
 ![Example of a tilted straight](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/tilted_straight.PNG)
 
 If the camera angle is too far tilted then the drawn boxes must be larger to accommodate the whole curve as well as considering the y-axis movement.
@@ -298,7 +302,7 @@ If the camera angle is too far tilted then the drawn boxes must be larger to acc
         self.update_section(course, droplet)
         return (self.x, self.y)
 ```
-3. The Update section takes any time that a Droplet moves position and checks if that droplet has moved into a segment along the course. It simply keys into the current segment gets the top left and bottom right (x, y) coordinates, and checks if the droplet is outside of it. If so update the section. The ladder half of the code in the commented "-----" has some implementation attempting to carry over data. This portion should be able to be removed entirely since the algorithm uses a global data structure. The idea with the previous design and this implementation was to have the droplets stored in the current segment and the next segment. The reason was because there was no easy way to transfer the data without it being lost. Ideally, the data would be seen in between two segments at the perfect time and update the data. Removing it and adding it was rarely perfect so the droplet would simply appear in the next segment, remove itself, then be lost before it's updated into the next segment. 
+3. The Update section takes any time that a Droplet moves segments and checks if that droplet has moved into a new segment along the course. It simply keys into the current segment gets the top left and bottom right (x, y) coordinates, and checks if the droplet is outside of it. If so update the section. The code in the commented "-----" has some implementation attempting to carry over data and should be disregarded. However, I'll leave it in to try to explain the thought process of this attempt. This portion should be able to be removed entirely since the algorithm uses a global data structure. The idea with the previous design and this implementation was to have the droplets stored in the current segment and the next segment. The reason was because there was no easy way to transfer the data without it being lost. Ideally, the data would be seen in between two segments at the perfect time and update the data. Removing it and adding it was rarely perfect so the droplet would simply appear in the next segment, remove itself, then be lost before it's updated into the next segment. 
 
 ```
     def update_section(self, course: Path, droplet) -> None:
@@ -314,10 +318,11 @@ If the camera angle is too far tilted then the drawn boxes must be larger to acc
                     course.segments_in_order[self.current_section + 1].add_droplet(droplet)
                #----------------------------------------------------------------------------#
 ```
-4. Update Last Seen attempts to dynamically update the average speed of a droplet. There are a handful of complexities to consider while designing this portion of the algorithm. The logic for Straight uses the difference between where it was last seen either on an x or a y. The difference in distance/time passed = new speed. 
-The curve speed is updated dynamically as well but utilizes a percentage threshold based on the proximity to the center of the curve. The total length of the curve is denoted by its width in x and proximity to the center by any given x value to the center. Since droplets slow down in curves, the algorithm attempts to replicate this process by reducing the speed as it approaches the center of the curve. This prevents the Droplet from exponentially leaving the Curve since it is a quadratic equation and the threshold here is hard coded as 0.3 preventing it from coming to a complete stop. <b>Future implementations</b> will need to find a better way to handle it to prevent it from coming to a complete stop. The following example shows the blue droplet traverses along the path to the start, middle, and end points. As it approaches the start it should be throttled by percentage and increases as it moves further away. 
 
-## This implementation is not complete, IP as of 12/22/2023
+4. Update Last Seen attempts to dynamically update the average speed of a droplet. There are a handful of complexities to consider while designing this portion of the algorithm. The logic for Straight uses the difference between where it was last seen either on an x or a y. The difference in distance/time passed = new speed. 
+The curve speed is updated dynamically as well but utilizes a percentage threshold based on the proximity to the center of the curve. The total length of the curve is denoted by its width in x and proximity to the center by any given x value to the center. Since droplets slow down in curves, the algorithm attempts to replicate this process by reducing the speed as it approaches the center of the curve. This prevents the Droplet from exponentially leaving the Curve since it is a quadratic equation and the threshold here is hard coded as 0.3 preventing it from coming to a complete stop. <b>Future implementations</b> will need to find a better way to handle it to prevent it from coming to a complete stop. The following example shows the blue droplet traverses along the path to the start, middle, and endpoints. As it approaches the start it should be throttled by percentage and increases as it moves further away. 
+
+## This implementation is not complete. Droplets slow down towards the center of the curve but do not accelerate it is leaves it IP as of 12/22/2023
 
 ![example of trajectory being throttled by percentage calculated by proximity to center](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/curve_speed.png)
 
@@ -347,7 +352,7 @@ The curve speed is updated dynamically as well but utilizes a percentage thresho
             self.last_detection = (mid, t)
 ```
 ## Step 4: The Path Object
-1. The Python Path Object has an array that holds the Path Segments in order. The add droplets to queues is an attempt to implement a local data structure to each segment to hold the Droplets.
+1. The Python Path Object has an array that holds the Path Segments in order. The add droplets to queues is an attempt to implement a local data structure to each segment to hold the Droplets. 
 ```
 class Path():
     def __init__(self) -> None:
