@@ -145,9 +145,6 @@ If the rightmost droplet or leftmost droplet is within the acceptable range retu
             l = m + 1
         else:
             r = m - 1
-    #Can add a section that makes the algorithm worst case O(n^2) and average nlogn if the algorithm falls here that means no droplet was ever returned so we can just
-    #Have it check it N^2 wise by comparing to every droplet. The since of the greedy algorithm attempts to avoid doing this in most cases drastically improving average run time
-    #Ideally we never have to add the comparing every droplet to every detection portion. But given the nature of the inconsistencies it is possible this would be necessary
 ```
 
 #### Highlighting A Crucial Point
