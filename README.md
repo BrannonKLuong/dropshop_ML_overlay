@@ -36,7 +36,7 @@ Frame 3: d1
 
 # Solution and Approach:
 
-#### The solution leverages the simplicity of knowing that the course is consistent. Meaning that the droplets travel across a fixed path. The implementation must also keep in mind that Machine Learning Models do not explicitly have a form of carrying information over to determine and help detect in consecutive frames. Tracking algorithms such as Kalman's algorithm estimate where an object will be based on its trajectory from previous frames and its current position in current frames. Kalman's filter is ideal for more complex environments. Maintaining this logic the design of this implementation of Dropshop uses Droplet objects to retain as much information to infer the position. Due to the simplicity of the Course lay the following was used to infer the future position of droplets. Initialize a bounding box that shows the direction of the segment of the course and whether the segment is a curve or a straight. A straight, simple in its implementations, modifies the x or y value of a droplet by the direction it's heading. A curve needs to be labeled accurately to utilize the Quadratic equation to predict its traversal along the course's curve. From this point let d<sub>n</sub> de droplets, course to be the entire path, segments be any part of the course, Det<sub>n</sub> to de detections.
+#### The solution leverages that the course is consistent. Meaning that the droplets travel across a fixed path. The implementation must also keep in mind that Machine Learning Models do not explicitly have a form of carrying information over to detect objects in consecutive frames. Tracking algorithms such as Kalman's algorithm estimate where an object will be based on its trajectory from previous frames and its current position in current frames. Kalman's filter is ideal for more complex environments. Maintaining this logic the design of this implementation of Dropshop uses Droplet objects to retain as much information to infer the position. Due to the simplicity of the Course layout, the following was used to infer the future position of droplets. Initialize a bounding box that shows the direction of the segment of the course and whether the segment is a curve or a straight. A straight, simple in its implementations, modifies the x or y value of a droplet by the direction it's heading. A curve needs to be labeled accurately with start, middle, and endpoints to utilize the Quadratic equation to predict its traversal along the course's curve. From this point let d<sub>n</sub> de droplets, course to be the entire path, segments be any part of the course, Det<sub>n</sub> to de detections.
 
 ## Step 0: Installing Requirements
 
@@ -59,9 +59,12 @@ pip install opencv-python==4.8.0.76
 ```
 
 ## Step 1: Main and Variable Initialization
-The main function begins with a Python clock timer to measure the run time of the algorithm.
 
-The main function takes two arguments the weights and the video. The weights were generated in the previous step and should be an accessible file path. The video can be passed in any acceptable format. : for future implementation, the hope is to replace this video with the camera path.
+The main function begins with a Python clock timer to measure the algorithm's run time.
+
+The main function takes two arguments the weights and the video. The weights were generated using the Roboflow and Yolov8 Models to save at an epoch set to 5. The video can be passed in any acceptable format. 
+
+#### Future implementations, the hope is to replace this video with the camera path.
 
 1. Start the section of the code and call the main
     ```if __name__ == '__main__':
