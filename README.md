@@ -73,10 +73,11 @@ The main function begins with a Python clock timer to measure the algorithm's ru
 
 The main function takes two arguments the weights and the video. The weights were generated using the Roboflow and Yolov8 Models to save at an epoch set to 5. The video can be passed in any acceptable format. 
 
-#### Future implementations, the hope is to replace this video with the camera path.
+#### Future implementations: Replace this video path with the camera.
 
 1. Start the section of the code and call the main
-    ```if __name__ == '__main__':
+    ```
+    if __name__ == '__main__':
     '''Start Time and End Time is a timer to measure run time'''
     start_time = time.perf_counter()
     main("runs/detect/train10/weights/best.pt", "droplet_videos/video_data_Rainbow 11-11-22.m4v")
