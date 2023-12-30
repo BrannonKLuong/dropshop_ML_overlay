@@ -77,15 +77,16 @@ The core of the logic is replaced with a binary search applied to a sorted array
 Find Closest Droplet now has a hard-coded parameter  called acceptable_distance which is an arbitrarily chosen value that determines whether or not a droplet is close enough to detection to be sufficiently returned/determined as the closest droplet. Inherently the algorithm follows the fundamentals of binary search and uses the distance values for comparisons.
 ```
 def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
-    '''As of right now the algorithm to find the closest droplet is Brute Force O(n^2)
-    Designing a Iterative Binary Search Algorithm'''
+    '''Iterative Binary Search Algorithm for DropShop using Distance as a Metric'''
     acceptable_distance = 10 #Some arbitrarily chosen acceptable distance 
     l, r = 0, len(arr) - 1
 
     while l <= r:
         if len(arr) == 1:
             return arr[0]
-        if l == r: #If pointers pointing to the same droplet return it since the rest of the array has been ignored and the array was traversed through binary search meaning\
+        if l == r:
+            #The entire array was traversed through binary search and no droplet was detected
+            #within the acceptable bounds, thus we missed the target so we brute force the attempt
             return brute_force(arr, mid)
 
         m = (l + r)//2
