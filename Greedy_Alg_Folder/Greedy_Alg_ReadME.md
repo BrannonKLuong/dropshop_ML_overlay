@@ -75,7 +75,8 @@ increasing the speed of the droplet as it leaves curves.
 
 ## The Bulk of the Changes in the Find Closest Droplet Function Logic
 The core of the logic is replaced with a binary search applied to a sorted array of droplets which is sorted by the sum of the distance traveled.
-Find Closest Droplet now has a hard-coded parameter called acceptable_distance which is an arbitrarily chosen value that determines whether or not a droplet is close enough to detection to be sufficiently returned/determined as the closest droplet. Inherently the algorithm follows the fundamentals of binary search and uses the distance values for comparisons.
+Find Closest Droplet now has a hard-coded parameter called acceptable_distance which is an arbitrarily chosen value that determines whether or not a droplet is close enough to detection to be sufficiently returned/determined as the closest droplet. Inherently the algorithm follows the fundamentals of binary search and uses the distance values for comparisons. L is the left index and R is the right index. 
+
 ```
 def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
     '''Iterative Binary Search Algorithm for DropShop using Distance as a Metric'''
@@ -87,7 +88,7 @@ def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
         if len(arr) == 1:
             return arr[0]
 ```
-If the entirety of the binary search is completed then eventually l will equal r. This means the entire array was traversed through a binary search and no droplet was detected
+If the entirety of the binary search is completed then eventually L will equal R. This means the entire array was traversed through a binary search and no droplet was detected
 within the acceptable bounds. This means the algorithm didn't find the target and Brute Force searches through the original method of finding a droplet to find the closest droplet. 
             
 ```
