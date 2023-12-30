@@ -71,7 +71,7 @@ def load_data():
 
 The main function begins with a Python clock timer to measure the algorithm's run time.
 
-The main function takes two arguments the weights and the video. The weights were generated using the Roboflow and Yolov8 Models to save at an epoch set to 5. The video can be passed in any acceptable format. 
+The main function takes two arguments the weights and the video. The weights were generated using the Roboflow and Yolov8 Models in the previous step at an epoch set to 5. The video can be passed in any acceptable format. 
 
 #### Future implementations: Replace this video path with the camera.
 
