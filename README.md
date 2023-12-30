@@ -22,9 +22,6 @@ If a droplet isn't detected it is considered "missing". The algorithm will attem
 
 #### Note get_droplet_on_screen() is hard-coded to initialize droplets at time T and location (x, y) of a dispenser. So this hard code varies by video
 
-# The Design
-The following portion will elaborate on the design process.
-
 # The Problem: 
 
 #### Previous Algorithms would lose track of the droplets in the course. When those droplets are reacquired (detected after being missed) by the computer vision the lost droplet would be labeled a new droplet. Droplets being lost by computer vision or former models are described as disappearances. Additionally, previous implementations used limited forms of Labeling such as Model provided labeling or incrementing counter labeling. 
