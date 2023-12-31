@@ -92,7 +92,7 @@ def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
 #### Highlighting A Crucial Point
 Recall that this algorithm is a Greedy Algorithm primarily because there is too much variability and never guarantees perfection in binary search. For example, there are times when the desired droplet is in the right half but the leftmost droplet is closest and will disregard it. To compensate for this factor in the case that the algorithm never finds an acceptable droplet within the desired threshold the algorithm will brute-force search for it. However, these cases are far less frequent and the average run time is O(nlogn).
 
-Th following conditional addresses this crucial point. If the entirety of the binary search is completed then eventually L will equal R. This means the entire array was traversed through a binary search and no droplet was detected
+The following conditional addresses this crucial point. If the entirety of the binary search is completed then eventually L will equal R. This means the entire array was traversed through a binary search and no droplet was detected
 within the acceptable bounds. This means the algorithm didn't find the target and Brute Force searches through the original method of finding a droplet to find the closest droplet. 
             
 ```
@@ -202,6 +202,7 @@ The algorithm measures the distance traveled along a quadratic curve using an ar
         distanced_traveled += get_arc_length(curr_seg, start_pt[0], coord_x) #Get the arc length traversed across the given intervals 
     return round(distanced_traveled, 2)
 ```
+
 The math of the get arc length takes the quadratic coefficients and writes the derivative. Since the algorithm has the benefit of knowing the curves always quadratic in nature the algorithm can arithmetically calculate the integral of the arc length. **Note** that the coefficients have to be rounded to avoid Python bit inaccuracies when handling large numbers. 
 
 ```
@@ -228,7 +229,8 @@ def calc_arc_length(x, a, b):
 ```
 
 #### Insertion Logic
-The Implemented Insertion Logic handles the cases listed in the main read-me.
+The Implemented Insertion Logic handles the cases listed in the main readme.
+
 ```
 def insert_and_sort_droplets(droplet, lst, course):
     if not lst:
@@ -261,4 +263,4 @@ def insert_and_sort_droplets(droplet, lst, course):
 ## With the rainbow video the algorithm runs a total of 5750 searches and of those 124 are brute forced while the rest are successfully binary searched. For this video brute force is used 2% of the time.
 
 In the terms of O(n^2) vs O(nlogn). n is the number of droplets. It can be more accurate in the description saying the worst case scenario is O(n * d) where n is the number of droplets and d is the number of detections. Recall ideally the machine learning model accurately detects each droplet. So ideally d == n.
-Therefore the core of the old implementation was to check every detection with every droplet O(n * d) since d == n, n * n, or O(n^2). In the Greedy Algorithm the implementation constantly disregards half of the array so the search is now O(d * log2(n) and since d == n, O(n*log2n) or just O(nlogn)
+Therefore the core of the old implementation was to check every detection with every droplet O(n * d) since d == n, n * n, or O(n^2). In the Greedy Algorithm, the implementation constantly disregards half of the array so the search is now O(d * log2(n) and since d == n, O(n*log2n) or just O(nlogn)
