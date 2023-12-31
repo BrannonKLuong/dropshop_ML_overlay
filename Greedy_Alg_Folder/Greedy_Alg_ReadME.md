@@ -88,7 +88,11 @@ def find_closest_droplet(arr, mid:(int, int), course, x_y_map) -> Droplet:
         if len(arr) == 1:
             return arr[0]
 ```
-If the entirety of the binary search is completed then eventually L will equal R. This means the entire array was traversed through a binary search and no droplet was detected
+
+#### Highlighting A Crucial Point
+Recall that this algorithm is a Greedy Algorithm primarily because there is too much variability and never guarantees perfection in binary search. For example, there are times when the desired droplet is in the right half but the leftmost droplet is closest and will disregard it. To compensate for this factor in the case that the algorithm never finds an acceptable droplet within the desired threshold the algorithm will brute-force search for it. However, these cases are far less frequent and the average run time is O(nlogn).
+
+Th following conditional addresses this crucial point. If the entirety of the binary search is completed then eventually L will equal R. This means the entire array was traversed through a binary search and no droplet was detected
 within the acceptable bounds. This means the algorithm didn't find the target and Brute Force searches through the original method of finding a droplet to find the closest droplet. 
             
 ```
@@ -120,23 +124,27 @@ Left_distance is the distance of the left-most droplet. Detection_distance is ho
         right_distance = determine_total_distance_traveled((arr[r].x, arr[r].y),course.segments_in_order[arr[r].current_section], course)
 ```
 Right_difference_detection is the distance of the rightmost droplet - the distance of the detection.
-Left Distance is the difference between the detection and leftmost droplet. 
+Left Distance is the difference between the detection and the leftmost droplet. 
 
 ```
         right_difference_detection = abs(right_distance - detection_distance)
         left_difference_detection = abs(detection_distance - left_distance)
 ```
 
-If the detection is within a reasonable detection to a droplet assume that's the closest and return it. This feature was added to replace the arr[m] == target: return function of a normal binary search. Since the algorithm needs something to classify as the target or known as the target a distance threshold should suffice. Imagine a radius around a droplet saying any detection within this radius is sufficiently close therefore that detection is associated with that droplet. Consider the following image.
+If the detection is within a reasonable detection to a droplet assume that's the closest and return it. This feature was added to replace the arr[m] == target: return function of a normal binary search. Since the algorithm needs something to classify as the target or known as the target a distance threshold should suffice. Imagine a radius around a droplet saying any detection within this radius is sufficiently close therefore that detection is associated with that droplet. Consider the following image:
 
 ![Acceptable Range Example](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/dropshop_acceptable_range_ex.png)
+
+In this let the acceptable range be arbitrarily chosen in this case 5. Detection 0, d0, is out of bounds at a range of 6 and disregarded. Detection 1, d1, is within the range at a distance of 3 therefore it is returned.
+
+#### Future Implementations: Optimize the acceptable range threshold that won't under/overfit the binary search algorithm.
 
 ```
         if calc_dist <= acceptable_distance:
             return m_d
 ```
 
-If the rightmost droplet or leftmost droplet is within the acceptable range return that droplet. Otherwise binary search.
+If the rightmost droplet or leftmost droplet is within the acceptable range return that droplet, otherwise binary search.
 
 ```
         if right_difference_detection <= acceptable_distance:
@@ -148,9 +156,6 @@ If the rightmost droplet or leftmost droplet is within the acceptable range retu
         else:
             r = m - 1
 ```
-
-#### Highlighting A Crucial Point
-Recall that this algorithm is a Greedy Algorithm primarily because there is too much variability and never guarantees perfection in the way of binary search. For example, there are times when the desired droplet is in the right half but the leftmost droplet is closest and will disregard it. To compensate for this factor in the case that the algorithm never finds an acceptable droplet within the desired threshold the algorithm will brute-force search for it. However, these cases are far less frequent and the average run time is O(nlogn).
 
 #### The Math to Determine Total Distance
 The only key difference in calculating the sum is for curves the algorithm uses the arc length formula.
