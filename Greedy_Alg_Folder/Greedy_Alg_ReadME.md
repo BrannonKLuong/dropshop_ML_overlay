@@ -155,13 +155,18 @@ The only key difference in calculating the sum is for curves the algorithm uses 
 
 ```
 def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate can be droplet coordinate or 
-    #Now let's get distance already traveled
     if not coordinate:
         return 0
     coord_x, coord_y = coordinate[0], coordinate[1]
-    distanced_traveled = course.segments_index_map[curr_seg][1] #if n - 1 segments have already been traversed add the flat sum of n segments to the distanced traveled
-    #Now calculate the distanced traveled in the current nth segment
-    #Remember the grid is inverted 0, 0 is the top left so we can use math.abs to get the absolute value of the distanced traveled since the start will be on the right, traveling left the det x should be < than the right most x
+```
+
+Distanced Traveled is the sum of all previous segments' distances. n - 1 segments have already been traversed add the flat sum of n - 1 segments to the distance traveled. When initializing x_y_map and mapping every (x, y) to a segment the algorithm also maps the distances. For example, segment 0 will be mapped to 0. segment 1 is mapped to the sum of 0's distance. Segment 2 is the sum of segment 1 and 0, etc. Then calculate how far the droplet/detection has traveled within its specific segment. 
+
+**Note**: Remember the grid is inverted 0, 0 is the top left so we can use math.abs to get the absolute value of the distanced traveled since the start will be on the right, traveling left the det x should be < than the right most x
+
+```
+    distanced_traveled = course.segments_index_map[curr_seg][1]
+  
     if isinstance(curr_seg, Straight): #if it's a straight
         horiz, vert = curr_seg.direction #Break the tuple into the horizontal, vertical direction
         if horiz and not vert: #If traveling horizontally and left <------------------------------- IMPORTANT: The Direction Tuple is in format of (1, 0) (0, 1) (-1, 0) (0, -1) denoting right, down, left, up
