@@ -162,14 +162,14 @@ def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate
 
 Distanced Traveled is the sum of all previous segments' distances. n - 1 segments have already been traversed add the flat sum of n - 1 segments to the distance traveled. When initializing x_y_map and mapping every (x, y) to a segment the algorithm also maps the distances. For example, segment 0 will be mapped to 0. segment 1 is mapped to the sum of 0's distance. Segment 2 is the sum of segment 1 and 0, etc. Then calculate how far the droplet/detection has traveled within its specific segment. 
 
-**Note**: Remember the grid is inverted 0, 0 is the top left so we can use math.abs to get the absolute value of the distanced traveled since the start will be on the right, traveling left the det x should be < than the right most x
+**Note**: Remember the grid is inverted 0, 0 is the top left so we can use math.abs to get the absolute value of the distance traveled since the start will be on the right, traveling left the det x should be < than the right-most x
 
 ```
     distanced_traveled = course.segments_index_map[curr_seg][1]
   
     if isinstance(curr_seg, Straight): #if it's a straight
         horiz, vert = curr_seg.direction #Break the tuple into the horizontal, vertical direction
-        if horiz and not vert: #If traveling horizontally and left <------------------------------- IMPORTANT: The Direction Tuple is in format of (1, 0) (0, 1) (-1, 0) (0, -1) denoting right, down, left, up
+        if horiz and not vert: #If traveling horizontally IMPORTANT: The Direction Tuple is in format of (1, 0) (0, 1) (-1, 0) (0, -1) denoting right, down, left, up
             if horiz == -1:
                 #Add the distance from the detection's x to the right most x of the segment
                 right_most_x = curr_seg.bottom_right[0]
@@ -186,34 +186,42 @@ Distanced Traveled is the sum of all previous segments' distances. n - 1 segment
                 top_most_y = curr_seg.top_left[1]
                 distanced_traveled += coord_y - top_most_y
     else: #If it's a curve
+```
+
+The algorithm measures the distance traveled along a quadratic curve using an arc length for quadratic formulas. 
+
+```
         start_pt = curr_seg.start
         distanced_traveled += get_arc_length(curr_seg, start_pt[0], coord_x) #Get the arc length traversed across the given intervals 
     return round(distanced_traveled, 2)
+```
+The math of the get arc length takes the quadratic coefficients and writes the derivative. Since the algorithm has the benefit of knowing the curves always quadratic in nature the algorithm can arithmetically calculate the integral of the arc length. **Note** that the coefficients have to be rounded to avoid Python bit inaccuracies when handling large numbers. 
 
+```
 def get_arc_length(curve, interval_1, interval_2):
     #Take the coefficients from the curve of the quadratic formula
     a, b, _ = curve.quadratic_coef
     
     #a and b have to be rounded or else the issue that the python can not represent very large numbers accurately after a said bit point
     #rounding 8 runs well for me so I'll leave it at that and test it.
-    a, b = round(a, 8), round(b, 8)#This number is arbitrarily chosen. Limitations with python will further explain in Git
+    a, b = round(a, 8), round(b, 8)#This number is arbitrarily chosen. 
     
-    #The following applies python's numpy to apply arc length integrals to calculate the distance along a quadratic curve
-    #Quad Integrand is a python library and a designed function to execute the formula of an "Arc Length Parameterization" or "Arc Length of a Quadratic Curve"
-    #Technically the formula is Arc Length Parameterization but the formula denotes deirative of both x(t) and y(t) but the nature of a quadratic formula you will factor out
+    #The following applies Python's numpy to apply arc length integrals to calculate the distance along a quadratic curve
+    #Quad Integrand is a Python library and a designed function to execute the formula of an "Arc Length Parameterization" or "Arc Length of a Quadratic Curve"
+    #Technically the formula is Arc Length Parameterization but the formula denotes the derivative of both x(t) and y(t) but the nature of a quadratic formula you will factor out
     #dx from the formula resulting the the sqrt of (1 + dy/dx**2)
     #Deratives 1
     result, _ = quad(calc_arc_length, interval_1, interval_2, args=(a, b))
     result = abs(round(result, 2)) #Absolute value and round it
     # print(f"Result of quad: {result}")
-    return result #Arbitrarily chosen decimal place to round to can be tested with more or less. Depends on necessity for Accuracy
+    return result #Arbitrarily chosen decimal place to round to can be tested with more or less. Depends on the necessity for Accuracy
 
 def calc_arc_length(x, a, b):
     return np.sqrt(1 + (2*a*x + b)**2)
 ```
 
 #### Insertion Logic
-The Implemented Insertion Logic handles the cases listed in the main read me.
+The Implemented Insertion Logic handles the cases listed in the main read-me.
 ```
 def insert_and_sort_droplets(droplet, lst, course):
     if not lst:
