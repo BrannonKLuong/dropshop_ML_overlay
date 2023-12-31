@@ -1,9 +1,9 @@
 # Design and Implementation of a Greedy Binary Search Dropshop Algorithm
 ## Summary:
-This implementation uses Binary Search assuming the droplets are in a sorted array.
+This implementation uses Binary Search which assumes the droplets are in a sorted array.
 The array is sorted by the order in which droplets are closest to the end. 
 The algorithm is greedy and thus takes an average case of O(nlogn) to run.
-Worst case scenario the algorithm doesn't find a droplet within an acceptable threshold with binary search and runs the Brute Algorithm after it tries binary search.
+The worst case scenario is that the algorithm doesn't find a droplet within an acceptable threshold with binary search and runs the Brute Algorithm after it tries binary search.
 This run time is O(nlogn + n^2) or O(n(logn + n)) where n^2 dominates and is O(n^2). This readme will only cover the primary implementation logic and highlight the differences from the initial design.
 
 ## Sorting the Array of Droplets
@@ -127,7 +127,9 @@ Left Distance is the difference between the detection and leftmost droplet.
         left_difference_detection = abs(detection_distance - left_distance)
 ```
 
-If the detection is within a reasonable detection to a droplet assume that's the closest and return it. This feature was added to replace the arr[m] == target: return function of a normal binary search. Since the algorithm needs something to classify as the target or known as the target a distance threshold should suffice. Imagine a radius around a droplet saying any detection within this radius is sufficiently close therefore that detection is associated with that droplet.
+If the detection is within a reasonable detection to a droplet assume that's the closest and return it. This feature was added to replace the arr[m] == target: return function of a normal binary search. Since the algorithm needs something to classify as the target or known as the target a distance threshold should suffice. Imagine a radius around a droplet saying any detection within this radius is sufficiently close therefore that detection is associated with that droplet. Consider the following image.
+
+!(Acceptable Range Example)[https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/dropshop_acceptable_range_ex.png]
 
 ```
         if calc_dist <= acceptable_distance:
