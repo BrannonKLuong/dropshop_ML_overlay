@@ -199,21 +199,21 @@ The math of the get arc length takes the quadratic coefficients and writes the d
 
 ```
 def get_arc_length(curve, interval_1, interval_2):
-    #Take the coefficients from the curve of the quadratic formula
+    '''Take the coefficients from the curve of the quadratic formula.
+
+     a and b have to be rounded or else the issue is that the python can not represent very large numbers accurately after n amount of bits. Rounding  to 8 runs well for me so I'll leave it at that and test it.
+
+The following applies Python's numpy to apply arc length integrals to calculate the distance along a quadratic curve. Quad Integrand is a Python library and a designed function to execute the formula of an "Arc Length Parameterization" or "Arc Length of a Quadratic Curve". Technically the formula is Arc Length Parameterization but the formula denotes the derivative of both x(t) and y(t) but the nature of a quadratic formula you will factor out
+    dx from the formula resulting the the sqrt of (1 + dy/dx**2)
+    Deratives 1
+'''
+
+
     a, b, _ = curve.quadratic_coef
-    
-    #a and b have to be rounded or else the issue that the python can not represent very large numbers accurately after a said bit point
-    #rounding 8 runs well for me so I'll leave it at that and test it.
     a, b = round(a, 8), round(b, 8)#This number is arbitrarily chosen. 
     
-    #The following applies Python's numpy to apply arc length integrals to calculate the distance along a quadratic curve
-    #Quad Integrand is a Python library and a designed function to execute the formula of an "Arc Length Parameterization" or "Arc Length of a Quadratic Curve"
-    #Technically the formula is Arc Length Parameterization but the formula denotes the derivative of both x(t) and y(t) but the nature of a quadratic formula you will factor out
-    #dx from the formula resulting the the sqrt of (1 + dy/dx**2)
-    #Deratives 1
     result, _ = quad(calc_arc_length, interval_1, interval_2, args=(a, b))
     result = abs(round(result, 2)) #Absolute value and round it
-    # print(f"Result of quad: {result}")
     return result #Arbitrarily chosen decimal place to round to can be tested with more or less. Depends on the necessity for Accuracy
 
 def calc_arc_length(x, a, b):
