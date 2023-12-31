@@ -129,7 +129,7 @@ Left Distance is the difference between the detection and leftmost droplet.
 
 If the detection is within a reasonable detection to a droplet assume that's the closest and return it. This feature was added to replace the arr[m] == target: return function of a normal binary search. Since the algorithm needs something to classify as the target or known as the target a distance threshold should suffice. Imagine a radius around a droplet saying any detection within this radius is sufficiently close therefore that detection is associated with that droplet. Consider the following image.
 
-!(Acceptable Range Example)[https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/dropshop_acceptable_range_ex.png]
+![Acceptable Range Example](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/dropshop_acceptable_range_ex.png)
 
 ```
         if calc_dist <= acceptable_distance:
