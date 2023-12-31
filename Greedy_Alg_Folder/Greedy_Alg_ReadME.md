@@ -4,9 +4,10 @@ This implementation uses Binary Search assuming the droplets are in a sorted arr
 The array is sorted by the order in which droplets are closest to the end. 
 The algorithm is greedy and thus takes an average case of O(nlogn) to run.
 Worst case scenario the algorithm doesn't find a droplet within an acceptable threshold with binary search and runs the Brute Algorithm after it tries binary search.
-This run time is  O(nlogn + n^2) where n^2 dominates and is O(n^2). This readme will only cover the primary implementation logic and highlight the differences from the initial design.
+This run time is O(nlogn + n^2) or O(n(logn + n)) where n^2 dominates and is O(n^2). This readme will only cover the primary implementation logic and highlight the differences from the initial design.
 
 ## Sorting the Array of Droplets
+
 The sorting algorithm is determined by the distance in which a droplet travels. 
 This distance is calculated by where the droplet is in the current section and summed to the total distance to travel previous segments.
 Distance Traveled = (Droplet's position - Segments Start Position) + the sum of every segment before it.
@@ -37,8 +38,7 @@ The following function in the Path class when initialized maps each segment to t
             return distance_traveled
 ```
 
-Updated Vertical Aspect of update_last_seen() still requires an efficient way of implementing
-increasing the speed of the droplet as it leaves curves.
+The updated Vertical Aspect of update_last_seen() still requires an efficient way of dynamically changing the speeds. As well as implement a way to increase the speed of the droplet as it leaves curves.
 
 ```
     def update_last_seen(self, mid : (int, int), t : int, x_y_map: {(int, int): Path}, speed_threshold : int) -> None:
@@ -74,7 +74,7 @@ increasing the speed of the droplet as it leaves curves.
 ```
 
 ## The Bulk of the Changes in the Find Closest Droplet Function Logic
-The core of the logic is replaced with a binary search applied to a sorted array of droplets which is sorted by the sum of the distance traveled.
+The core of the logic is replaced with a binary search applied to a sorted array of droplets which is sorted by the sum of the distance traveled.   
 Find Closest Droplet now has a hard-coded parameter called acceptable_distance which is an arbitrarily chosen value that determines whether or not a droplet is close enough to detection to be sufficiently returned/determined as the closest droplet. Inherently the algorithm follows the fundamentals of binary search and uses the distance values for comparisons. L is the left index and R is the right index. 
 
 ```
