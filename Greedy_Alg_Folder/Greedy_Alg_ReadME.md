@@ -203,7 +203,9 @@ The algorithm measures the distance traveled along a quadratic curve using an ar
     return round(distanced_traveled, 2)
 ```
 
-The math of the get arc length takes the quadratic coefficients and writes the derivative. Since the algorithm has the benefit of knowing the curves always quadratic in nature the algorithm can arithmetically calculate the integral of the arc length. **Note** that the coefficients have to be rounded to avoid Python bit inaccuracies when handling large numbers. 
+The math of the get arc length takes the quadratic coefficients and writes the derivative. Since the algorithm has the benefit of knowing the curves always quadratic in nature the algorithm can arithmetically calculate the integral of the arc length. 
+
+### Important Note: tThe coefficients have to be rounded to avoid Python bit inaccuracies when handling large numbers. 
 
 ```
 def get_arc_length(curve, interval_1, interval_2):
