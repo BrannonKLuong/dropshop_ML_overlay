@@ -158,7 +158,7 @@ If the rightmost droplet or leftmost droplet is within the acceptable range retu
 ```
 
 #### The Math to Determine Total Distance
-The only key difference in calculating the sum is for curves the algorithm uses the arc length formula.
+The main challenge for calculating the sum is for curves. The algorithm uses the arc length formula.
 
 ```
 def determine_total_distance_traveled(coordinate, curr_seg, course): #Coordinate can be droplet coordinate or 
