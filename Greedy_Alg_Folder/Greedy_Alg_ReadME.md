@@ -265,7 +265,12 @@ def insert_and_sort_droplets(droplet, lst, course):
 ## With the rainbow video the algorithm runs a total of 5750 searches and of those 124 are brute forced while the rest are successfully binary searched. For this video brute force is used 2% of the time.
 
 In the terms of O(n^2) vs O(nlogn). n is the number of droplets. It can be more accurate in the description saying the worst case scenario is O(n * d) where n is the number of droplets and d is the number of detections. Recall, that ideally, the machine learning model accurately detects each droplet. So ideally d == n.
-Therefore the core of the old implementation was to check every detection with every droplet O(n * d) since d == n, n * n, or O(n^2). In the Greedy Algorithm, the implementation constantly disregards half of the array so the search is now O(d * log<sub>2</sub>(n) and since d == n, O(n*log<sub>2</sub>n)) or just O(nlogn). For an average of 4 droplets a frame that would mean the original algorithm would've run 4^4 * 5750 = 92000 searches. Compared to the new algorithm which does binary search 98% but since it tries binary search every frame then the brute force, in this case, the result is of the time 5750(4log(4)) + 0.02(5750) * (4^2) or about 15687 searches.  
+Therefore the core of the old implementation was to check every detection with every droplet O(n * d) since d == n, n * n, or O(n^2). In the Greedy Algorithm, the implementation constantly disregards half of the array so the search is now O(d * log<sub>2</sub>(n)) and since d == n, O(n*log<sub>2</sub>n)) or just O(nlogn). For an average of 4 droplets a frame that would mean the original algorithm would've run 4^4 * 5750 = 92000 searches. Compared to the new algorithm which does binary search 98% but since it tries binary search every frame then the brute force, in this case, the result is of the time 5750(4log(4)) + 0.02(5750) * (4^2) or about 15687 searches.  
 
 The next question is how accurate does binary search has to be before it becomes worse than the brute force case.  
+In this case, the formula can be the frames * d(log(d)) + % of failures * frames * d^2 == frames * d^2. Since the values may vary on a case-by-case scenario it's best to plot the graphs on a demos chart. Consider the following graphs.
+
+f(x) = 5750x^2  
+
+f(d) = 5750 * (d * log<sub>2</sub>(d) + 0.2 * 5750 * d^2
 
