@@ -274,7 +274,7 @@ f(x) = 5750x^2
 
 f(d) = 5750 * (d * log<sub>2</sub>(d) + 0.2 * 5750 * d^2
 
-![Example of the Difference](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/computational_difference.png)
+![Example of the Difference](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/computational_difference_1.png)
 
 The most generalized formula is nlogn + xn^2 = n^2  
 Isolating for x:  
