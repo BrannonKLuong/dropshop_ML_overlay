@@ -276,3 +276,13 @@ f(d) = 5750 * (d * log<sub>2</sub>(d) + 0.2 * 5750 * d^2
 
 ![Example of the Difference](https://github.com/BrannonKLuong/dropshop_ML_overlay/blob/main/img_assets/computational_difference.png)
 
+The most generalized formula is nlogn + xn^2 = n^2  
+Isolating for x:  
+x = (n^2 - nlogn)/n^2  
+In our case
+
+x = 16 - 8 / 16 = 0.5
+
+Using binary search the algorithm will always perform better than brute force if it is accurate half the time. As long as binary search is successful 50% or more of the time then the algorithm performs better than n^2.
+
+
